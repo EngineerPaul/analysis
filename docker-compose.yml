@@ -1,31 +1,44 @@
 services:
   backend:
     build: ./backend
+    container_name: analysis_backend
     env_file:
       - .env
-    ports:
-      - "9002:9002"
+    # ports:
+    #   - "9002:9002"
     volumes:
       - ./backend/logs:/app/logs
       - ./backend/data:/data
+    networks:
+      - default
+      - extra_net
 
   frontend:
     build:
       context: ./frontend
       args:
-        # Берётся из корневого .env (Compose подставляет при build).
+        # Берётся из корневого .env или по умолчанию /extra/analysis
         # В рантайм frontend это не нужно: префикс уже «зашит» в собранный JS.
         VITE_ROOT_PATH: ${ROOT_PATH:-/extra/analysis}
-    ports:
-      - "9001:9001"
+    container_name: analysis_frontend
+    # ports:
+    #   - "9001:9001"
+    networks:
+      - default
+      - extra_net
 
   nginx:
     profiles: ["devproxy"]
     build: ./nginx
     ports:
       - "8000:80"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     depends_on:
       - backend
       - frontend
+    networks:
+      - default
+
+networks:
+  extra_net:
+    external: true
+    name: extra_services

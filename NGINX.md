@@ -45,7 +45,8 @@ location = /extra/analysis {
 docker compose --profile devproxy up --build -d
 ```
 
-Слушает `localhost:8000` и проксирует на `host.docker.internal:9001/9002`.
+Слушает `localhost:8000` и проксирует по docker-сети на `analysis_frontend:9001` и `analysis_backend:9002`
+(порты сервисов на хост в compose для этого режима не публикуются).
 
 ## Cookie / CORS
 
