@@ -1,0 +1,31 @@
+services:
+  backend:
+    build: ./backend
+    env_file:
+      - .env
+    ports:
+      - "9002:9002"
+    volumes:
+      - ./backend/logs:/app/logs
+      - ./backend/data:/data
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Берётся из корневого .env (Compose подставляет при build).
+        # В рантайм frontend это не нужно: префикс уже «зашит» в собранный JS.
+        VITE_ROOT_PATH: ${ROOT_PATH:-/extra/analysis}
+    ports:
+      - "9001:9001"
+
+  nginx:
+    profiles: ["devproxy"]
+    build: ./nginx
+    ports:
+      - "8000:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - backend
+      - frontend

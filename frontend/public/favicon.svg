@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Пробирка">
+  <rect x="24" y="6" width="16" height="8" rx="2" fill="#2f6f4e"/>
+  <path d="M26 14h12v34a8 8 0 0 1-12 0V14z" fill="#d7f0e2" stroke="#2f6f4e" stroke-width="3"/>
+  <path d="M26 34h12v14a8 8 0 0 1-12 0V34z" fill="#3ca06a"/>
+  <circle cx="32" cy="42" r="3" fill="#ffffff" opacity="0.35"/>
+</svg>

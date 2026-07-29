@@ -1,0 +1,15 @@
+# Backend
+__pycache__
+*.pyc
+.pytest_cache
+.coverage
+htmlcov
+.venv
+venv
+logs
+data
+*.log
+*.db
+*.sqlite
+*.sqlite3
+.pytest_cache

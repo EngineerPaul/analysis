@@ -1,0 +1,25 @@
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.venv/
+venv/
+backend/.venv/
+backend/logs/
+backend/data/
+*.log
+*.db
+*.sqlite
+*.sqlite3
+node_modules/
+frontend/dist/
+.DS_Store
+.idea/
+.vscode/
+_tz_extract.txt
+prompt analisis.docx
