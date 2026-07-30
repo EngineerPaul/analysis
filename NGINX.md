@@ -1,19 +1,29 @@
 # NGINX
 
-Настройки для встраивания сервиса в `https://daystream.ru/extra/analysis/`.
+Встраивание сервиса в `https://daystream.ru/extra/analysis/`.
 
-## Порты сервисов на хосте
+## Как связаны сервисы
 
-- frontend: `127.0.0.1:9001`
-- backend: `127.0.0.1:9002`
+В `docker-compose.yml` порты backend/frontend на хост **не публикуются**.  
+Контейнеры `analysis_backend` и `analysis_frontend` висят во внешней сети `extra_services`.
 
-Nginx (вне этого репозитория) должен проксировать **через сеть хоста** на раскрытые порты контейнеров.
+Внешний (prod) nginx должен быть в той же сети и ходить по **именам контейнеров**, не через `127.0.0.1`.
+
+```bash
+docker network create extra_services   # если сети ещё нет
+# контейнер host-nginx тоже подключить к extra_services
+```
+
+Внутренние порты процессов:
+
+- frontend (nginx со статикой): `9001`
+- backend (uvicorn): `9002`
 
 ## Пример location для prod
 
 ```nginx
 location /extra/analysis/api/ {
-    proxy_pass http://127.0.0.1:9002/api/;
+    proxy_pass http://analysis_backend:9002/api/;
     proxy_http_version 1.1;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
@@ -22,7 +32,7 @@ location /extra/analysis/api/ {
 }
 
 location /extra/analysis/ {
-    proxy_pass http://127.0.0.1:9001/extra/analysis/;
+    proxy_pass http://analysis_frontend:9001/extra/analysis/;
     proxy_http_version 1.1;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
@@ -35,18 +45,22 @@ location = /extra/analysis {
 }
 ```
 
+После правок:
+
+```bash
+sudo nginx -t && sudo systemctl reload nginx
+```
+
 ## Dev-прокси в compose
 
-Файл `nginx/nginx.conf` используется контейнером профиля `devproxy`.
-
-Запуск:
+Файл `nginx/nginx.conf` — контейнер с profile `devproxy` (не для прода).
 
 ```bash
 docker compose --profile devproxy up --build -d
 ```
 
-Слушает `localhost:8000` и проксирует по docker-сети на `analysis_frontend:9001` и `analysis_backend:9002`
-(порты сервисов на хост в compose для этого режима не публикуются).
+- слушает `localhost:8000`
+- проксирует на `analysis_frontend:9001` и `analysis_backend:9002` по docker-сети `default` проекта
 
 ## Cookie / CORS
 

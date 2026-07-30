@@ -4,86 +4,88 @@
 
 ## Состав
 
-- `backend/` — FastAPI + SQLAlchemy + SQLite
-- `frontend/` — React + Vite + React Router
-- `nginx/` — reverse-proxy для локальной проверки UI (compose profile `devproxy`)
-- `NGINX.md` — настройки nginx для prod (`daystream.ru/extra/analysis`)
+- `backend/` — FastAPI + SQLAlchemy + SQLite (`analysis_backend`)
+- `frontend/` — React + Vite, статика через nginx (`analysis_frontend`)
+- `nginx/` — только local reverse-proxy (compose profile `devproxy`)
+- `NGINX.md` — настройки внешнего nginx для prod (`daystream.ru/extra/analysis`)
+- `CI.md` — настройка GitHub Actions (секреты, SSH, деплой)
 
-## Быстрый старт (Docker)
+## Сеть Docker
 
-1. Скопируйте `.env.example` в `.env` и при необходимости измените секреты.
-2. Запуск сервисов:
+Сервисы подключаются к внешней сети `extra_services` (чтобы host-nginx на проде ходил к ним по имени контейнера).
 
 ```bash
-docker compose up --build -d
+docker network create extra_services   # один раз, если сети ещё нет
 ```
 
-Открытые порты:
+Порты `9001`/`9002` на хост **не публикуются**.
 
-- frontend: `http://127.0.0.1:9001/extra/analysis/`
-- backend: `http://127.0.0.1:9002/api/v1/` (docs: `/docs`)
+## Dev (локально)
 
-SQLite-файл: `./backend/data/analysis.db` (bind mount в контейнер `/data/analysis.db`, в git не попадает).
-
-3. Локальный nginx-прокси (как на проде, через порты хоста):
+1. Скопируйте `.env.example` → `.env`.
+2. Запуск с прокси на `:8000`:
 
 ```bash
 docker compose --profile devproxy up --build -d
 ```
 
-UI через прокси: `http://127.0.0.1:8000/extra/analysis/`
+UI: http://127.0.0.1:8000/extra/analysis/
+
+Dev-nginx проксирует по docker-сети на `analysis_frontend:9001` и `analysis_backend:9002`.
+
+SQLite: `./backend/data/analysis.db` (в git не попадает).
+
+## Prod
+
+```bash
+git clone https://github.com/EngineerPaul/analysis.git
+cd analysis
+cp .env.example .env
+# SECRET_KEY, COOKIE_SECURE=true, CORS_ORIGINS=https://daystream.ru
+
+docker network create extra_services   # если ещё нет
+docker compose up --build -d           # без profile devproxy
+```
+
+Внешний nginx на сервере должен быть в сети `extra_services` и проксировать на контейнеры — см. `NGINX.md`.
+
+Сайт: https://daystream.ru/extra/analysis/
 
 ## Переменные окружения
 
-См. `.env.example`.
+См. `.env.example`. Один файл — корневой `.env`.
 
-Важные:
+- `ROOT_PATH` — префикс приложения (backend + `build.args` frontend)
+- `COOKIE_PATH`, `COOKIE_SECURE`, `COOKIE_SAMESITE`
+- `CORS_ORIGINS`
+- `SECRET_KEY`
+- `DATABASE_URL=sqlite:////data/analysis.db`
 
-- `ROOT_PATH=/extra/analysis` — префикс приложения (и для backend, и для сборки frontend через compose `build.args`)
-- `COOKIE_PATH=/extra/analysis`
-- `COOKIE_SECURE=false` для dev, `true` для prod
-- `CORS_ORIGINS` — разрешённые origin фронта
-- `SECRET_KEY` — секрет подписи JWT
-
-Конфиг один: корневой `.env`. Его же Compose читает для подстановки `${ROOT_PATH}` при сборке frontend.
-`env_file` у backend передаёт переменные в **запущенный** контейнер API.
-У frontend отдельный `.env` не нужен: Vite-переменные нужны только на `npm run build`, их передаёт `build.args`.
+`env_file` у backend — переменные в **запущенный** API-контейнер.  
+У frontend отдельный `.env` не нужен: `VITE_*` задаётся при сборке через compose `build.args`.
 
 ## API (кратко)
 
-Префикс: `/api/v1`
+Префикс внутри backend: `/api/v1`  
+Снаружи (через nginx): `/extra/analysis/api/v1/...`
 
-Auth:
+- `POST /auth/registration`, `/auth/login`, `/auth/logout`, `/auth/refresh`
+- `POST|GET /analysis`, `DELETE /analysis/{id}`
 
-- `POST /auth/registration`
-- `POST /auth/login`
-- `POST /auth/logout`
-- `POST /auth/refresh`
+JWT в HttpOnly cookie (`SameSite=Lax`).
 
-Analyses:
-
-- `POST /analysis`
-- `GET /analysis`
-- `DELETE /analysis/{id}`
-
-JWT access/refresh хранятся в HttpOnly cookie (`SameSite=Lax`).
-
-## Тесты backend (через Docker)
-
-Нужен запущенный Docker Desktop.
+## Тесты backend
 
 ```bash
 docker compose build backend
 docker compose run --rm backend pytest
 ```
 
-Требование покрытия: не ниже 90%.
+Покрытие: не ниже 90%.
 
 ## Замечания
 
-- Frontend и backend работают в разных контейнерах одной docker-сети.
-- Отдельный контейнер БД не используется: SQLite в `./backend/data` (каталог в `.gitignore`).
-- Nginx в prod внешний и проксирует на `127.0.0.1:9001` / `127.0.0.1:9002`.
-- Единицы измерения в текущей версии не хранятся (см. ТЗ, будущие доработки).
-- Подробности frontend: `frontend/FRONTEND.md`.
-- Подробности nginx: `NGINX.md`.
+- Отдельный контейнер БД не используется (SQLite + bind mount `./backend/data`).
+- Profile `devproxy` на прод не поднимать.
+- Единицы измерения пока не хранятся.
+- Frontend: `frontend/FRONTEND.md`. Nginx: `NGINX.md`.
