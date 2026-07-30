@@ -103,7 +103,9 @@ ssh -i ./github_actions_ed25519 -p 22 USER@HOST
 
 ---
 
-## 3. Файлы CI в репозитории (уже в проекте)
+## 3. Файлы CI в репозитории
+
+После настройки секретов в репозитории добавляются (отдельным шагом разработки):
 
 ```text
 .github/workflows/ci-cd.yml   # pipeline: CI + deploy
@@ -115,10 +117,11 @@ ssh -i ./github_actions_ed25519 -p 22 USER@HOST
 На `ubuntu-latest` при push/PR в `master` и при `workflow_dispatch`:
 
 1. Checkout кода
-2. Создание сети `extra_services` (нужна compose)
-3. `docker compose config`
-4. `docker compose build backend`
-5. `docker compose run --rm --no-deps backend pytest`
+2. `cp .env.example .env` (в CI нет секретов; compose требует файл из `env_file`)
+3. Создание сети `extra_services` (нужна compose)
+4. `docker compose config`
+5. `docker compose build backend`
+6. `docker compose run --rm --no-deps backend pytest`
 
 Deploy **не** запускается на pull_request.
 

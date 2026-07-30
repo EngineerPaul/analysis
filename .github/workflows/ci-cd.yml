@@ -19,6 +19,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Prepare .env for CI
+        run: cp .env.example .env
+
       - name: Ensure docker network exists
         run: docker network create extra_services || true
 
