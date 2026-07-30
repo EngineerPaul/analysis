@@ -3,18 +3,21 @@
 import os
 from collections.abc import Generator
 
+# Force test settings: compose injects prod-like COOKIE_PATH=/extra/analysis,
+# and setdefault() would not override it — cookies then never attach to /api/*.
+os.environ["DATABASE_URL"] = "sqlite+pysqlite://"
+os.environ["SECRET_KEY"] = "test-secret-key"
+os.environ["COOKIE_SECURE"] = "false"
+os.environ["COOKIE_PATH"] = "/"
+os.environ["COOKIE_SAMESITE"] = "lax"
+os.environ["ROOT_PATH"] = ""
+os.environ["LOG_FILE"] = "logs/test.log"
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
-
-os.environ.setdefault("DATABASE_URL", "sqlite+pysqlite://")
-os.environ.setdefault("SECRET_KEY", "test-secret-key")
-os.environ.setdefault("COOKIE_SECURE", "false")
-os.environ.setdefault("COOKIE_PATH", "/")
-os.environ.setdefault("ROOT_PATH", "")
-os.environ.setdefault("LOG_FILE", "logs/test.log")
 
 from app.config import get_settings
 
@@ -22,7 +25,6 @@ get_settings.cache_clear()
 
 from app.database import Base, get_db
 from app.main import create_app
-from app.utils.cookies import CookieManager
 
 
 engine = create_engine(

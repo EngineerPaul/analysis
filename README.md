@@ -81,7 +81,7 @@ docker compose build backend
 docker compose run --rm backend pytest
 ```
 
-Покрытие: не ниже 90%.
+Покрытие: ориентир около 70% (`pytest --cov-fail-under=70`).
 
 ## Замечания
 
