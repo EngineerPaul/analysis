@@ -45,6 +45,8 @@ location = /extra/analysis {
 }
 ```
 
+В dev-прокси (`nginx/nginx.conf`) включено `absolute_redirect off`, чтобы `301` на trailing slash не сбрасывал порт (иначе `Host: 127.0.0.1:8000` превращался бы в `http://127.0.0.1/extra/analysis/`). В `frontend/nginx.conf` и на хостовом nginx (порт 80/443) это не нужно: редирект без слэша обрабатывает внешний nginx, а стандартный порт в URL и так не пишется.
+
 После правок:
 
 ```bash
