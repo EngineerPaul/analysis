@@ -127,9 +127,11 @@ export default function HomePage() {
               <option key={name} value={name}>{name}</option>
             ))}
           </select>
-          <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
-          <span className="dash">—</span>
-          <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+          <div className="filters-dates">
+            <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
+            <span className="dash">—</span>
+            <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+          </div>
           <button
             type="button"
             className="btn primary"
