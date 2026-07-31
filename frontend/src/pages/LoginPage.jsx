@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiRequest, readJson } from '../api/client';
 import { CYRILLIC_RE, validateLogin, validatePassword } from '../utils/validators';
@@ -11,6 +11,20 @@ export default function LoginPage() {
   const [form, setForm] = useState({ login: '', password: '' });
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState('');
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const response = await apiRequest('/analyses');
+      if (!cancelled && response.ok) {
+        navigate('/', { replace: true });
+        return;
+      }
+      if (!cancelled) setCheckingAuth(false);
+    })();
+    return () => { cancelled = true; };
+  }, [navigate]);
 
   /**
    * Update a form field; show Cyrillic error immediately while typing.
@@ -57,6 +71,10 @@ export default function LoginPage() {
     const data = await readJson(response);
     if (response.status === 401) setServerError('Неверный логин или пароль');
     else setServerError(data?.detail ? JSON.stringify(data.detail) : 'Ошибка входа');
+  }
+
+  if (checkingAuth) {
+    return <div className="auth-page" />;
   }
 
   return (

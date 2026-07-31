@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiRequest, readJson } from '../api/client';
 import { CYRILLIC_RE, NAME_RE, validateLogin, validatePassword } from '../utils/validators';
@@ -17,6 +17,20 @@ export default function RegistrationPage() {
   });
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState('');
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const response = await apiRequest('/analyses');
+      if (!cancelled && response.ok) {
+        navigate('/', { replace: true });
+        return;
+      }
+      if (!cancelled) setCheckingAuth(false);
+    })();
+    return () => { cancelled = true; };
+  }, [navigate]);
 
   /**
    * Update a single form field; show Cyrillic error immediately for login/password.
@@ -80,6 +94,10 @@ export default function RegistrationPage() {
     const data = await readJson(response);
     if (response.status === 409) setServerError('Логин уже занят');
     else setServerError(data?.detail ? JSON.stringify(data.detail) : 'Ошибка регистрации');
+  }
+
+  if (checkingAuth) {
+    return <div className="auth-page" />;
   }
 
   return (
