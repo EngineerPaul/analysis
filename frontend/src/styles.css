@@ -28,7 +28,8 @@ body {
 }
 
 a { color: var(--primary-deep); }
-button, a, select, input, textarea, .icon-delete { cursor: pointer; }
+button, a, select, .icon-delete { cursor: pointer; }
+input, textarea { cursor: text; }
 
 .page {
   min-height: 100vh;
