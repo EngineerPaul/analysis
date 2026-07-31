@@ -12,7 +12,8 @@
     flex-direction: column;
     align-items: stretch;
   }
-  .filters select, .filters input, .graph-filters select, .graph-filters input {
+  .filters select, .filters input, .graph-filters select, .graph-filters input,
+  .graph-filters .scroll-select {
     width: 100%;
     min-width: 0;
   }

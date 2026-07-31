@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import AnalysesChart from '../components/AnalysesChart';
 import DataTable from '../components/DataTable';
+import ScrollableSelect from '../components/ScrollableSelect';
 import { useAnalyses } from '../context/AnalysesContext';
 import { formatDate, formatNumber } from '../utils/validators';
 
@@ -92,12 +93,7 @@ export default function GraphPage() {
         <Link className="back-link" to="/">← На Главную</Link>
         <h2 className="section-title">Создание графика:</h2>
         <div className="filters graph-filters">
-          <select value={name} onChange={(e) => setName(e.target.value)}>
-            <option value="">-----</option>
-            {names.map((item) => (
-              <option key={item} value={item}>{item}</option>
-            ))}
-          </select>
+          <ScrollableSelect options={names} value={name} onChange={setName} />
           <input type="date" value={begin} onChange={(e) => setBegin(e.target.value)} />
           <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} />
           <button type="button" className="btn primary" onClick={handleBuild}>Построить</button>

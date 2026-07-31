@@ -149,7 +149,8 @@ input:focus, select:focus, textarea:focus {
   align-items: center;
   margin-bottom: 16px;
 }
-.filters select, .filters input, .graph-filters select, .graph-filters input {
+.filters select, .filters input, .graph-filters select, .graph-filters input,
+.graph-filters .scroll-select {
   width: auto;
   min-width: 140px;
 }
@@ -263,6 +264,52 @@ input:focus, select:focus, textarea:focus {
   padding: 10px 12px;
 }
 .suggestions button:hover { background: #deebe3; }
+
+.scroll-select {
+  position: relative;
+  width: 100%;
+}
+.scroll-select__trigger {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font: inherit;
+  text-align: left;
+  background: #f2f6f3;
+  color: var(--text);
+}
+.scroll-select__trigger:focus {
+  outline: 2px solid rgba(47, 158, 98, 0.25);
+  border-color: var(--primary);
+}
+.scroll-select__list {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  max-height: min(240px, 40dvh);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #f2f6f3;
+  z-index: 6;
+}
+.scroll-select__list button {
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: 10px 12px;
+  font: inherit;
+  color: var(--text);
+  min-height: 44px;
+}
+.scroll-select__list button:hover,
+.scroll-select__list button.is-selected {
+  background: #deebe3;
+}
 
 .chart-wrap { position: relative; margin: 12px 0 20px; }
 .analyses-chart {

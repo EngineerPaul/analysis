@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAnalyses } from '../context/AnalysesContext';
+import ScrollableSelect from './ScrollableSelect';
 
 /**
  * Modal form that redirects to graph page with query params.
@@ -40,12 +41,14 @@ export default function GraphForm({ onCreate, onCancel }) {
     <form className="stack-form" onSubmit={handleSubmit}>
       <label>
         Название анализа
-        <select value={name} onChange={(e) => setName(e.target.value)}>
-          <option value="">-----</option>
-          {names.map((item) => (
-            <option key={item} value={item}>{item}</option>
-          ))}
-        </select>
+        <ScrollableSelect
+          options={names}
+          value={name}
+          onChange={(next) => {
+            setName(next);
+            setError('');
+          }}
+        />
       </label>
       <div className="refs-block">
         <span className="refs-label">Период</span>
