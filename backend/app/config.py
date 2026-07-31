@@ -10,18 +10,18 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
-    database_url: str = "sqlite:////data/analysis.db"
+    database_url: str = "sqlite:////data/analyses.db"
     secret_key: str = "change-me-in-production-use-long-random-string"
     algorithm: str = "HS256"
     access_token_expire_days: int = 1
     refresh_token_expire_days: int = 30
-    root_path: str = "/extra/analysis"
+    root_path: str = "/extra/analyses"
     cookie_secure: bool = False
     cookie_samesite: str = "lax"
-    cookie_path: str = "/extra/analysis"
-    cors_origins: str = "http://localhost:8000,http://localhost:9001,https://daystream.ru"
+    cookie_path: str = "/extra/analyses"
+    cors_origins: str = "http://localhost:8000,https://daystream.ru"
     log_file: str = "logs/app.log"
-    backend_port: int = 9002
+    backend_port: int = 8000
 
     @property
     def cors_origin_list(self) -> list[str]:

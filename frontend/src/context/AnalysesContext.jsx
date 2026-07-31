@@ -22,7 +22,7 @@ export function AnalysesProvider({ children }) {
     setLoading(true);
     setError('');
     try {
-      const response = await apiRequest('/analysis');
+      const response = await apiRequest('/analyses');
       if (response.status === 401) {
         setHistory(null);
         setError('unauthorized');

@@ -257,7 +257,7 @@ input:focus, select:focus, textarea:focus {
 .suggestions button:hover { background: #deebe3; }
 
 .chart-wrap { position: relative; margin: 12px 0 20px; }
-.analysis-chart {
+.analyses-chart {
   width: 100%;
   height: auto;
   background: #eef2ef;

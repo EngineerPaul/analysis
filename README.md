@@ -4,10 +4,10 @@
 
 ## Состав
 
-- `backend/` — FastAPI + SQLAlchemy + SQLite (`analysis_backend`)
-- `frontend/` — React + Vite, статика через nginx (`analysis_frontend`)
+- `backend/` — FastAPI + SQLAlchemy + SQLite (`analyses_backend`)
+- `frontend/` — React + Vite, статика через nginx (`analyses_frontend`)
 - `nginx/` — только local reverse-proxy (compose profile `devproxy`)
-- `NGINX.md` — настройки внешнего nginx для prod (`daystream.ru/extra/analysis`)
+- `NGINX.md` — настройки внешнего nginx для prod (`daystream.ru/extra/analyses`)
 - `CI.md` — настройка GitHub Actions (секреты, SSH, деплой)
 
 ## Сеть Docker
@@ -18,7 +18,7 @@
 docker network create extra_services   # один раз, если сети ещё нет
 ```
 
-Порты `9001`/`9002` на хост **не публикуются**.
+Порты `80`/`8000` на хост **не публикуются**.
 
 ## Dev (локально)
 
@@ -29,11 +29,11 @@ docker network create extra_services   # один раз, если сети ещ
 docker compose --profile devproxy up --build -d
 ```
 
-UI: http://127.0.0.1:8000/extra/analysis/
+UI: http://127.0.0.1:8000/extra/analyses/
 
-Dev-nginx проксирует по docker-сети на `analysis_frontend:9001` и `analysis_backend:9002`.
+Dev-nginx проксирует по docker-сети на `analyses_frontend:80` и `analyses_backend:8000`.
 
-SQLite: `./backend/data/analysis.db` (в git не попадает).
+SQLite: `./backend/data/analyses.db` (в git не попадает).
 
 ## Prod
 
@@ -49,7 +49,7 @@ docker compose up --build -d           # без profile devproxy
 
 Внешний nginx на сервере должен быть в сети `extra_services` и проксировать на контейнеры — см. `NGINX.md`.
 
-Сайт: https://daystream.ru/extra/analysis/
+Сайт: https://daystream.ru/extra/analyses/
 
 ## Переменные окружения
 
@@ -59,7 +59,7 @@ docker compose up --build -d           # без profile devproxy
 - `COOKIE_PATH`, `COOKIE_SECURE`, `COOKIE_SAMESITE`
 - `CORS_ORIGINS`
 - `SECRET_KEY`
-- `DATABASE_URL=sqlite:////data/analysis.db`
+- `DATABASE_URL=sqlite:////data/analyses.db`
 
 `env_file` у backend — переменные в **запущенный** API-контейнер.  
 У frontend отдельный `.env` не нужен: `VITE_*` задаётся при сборке через compose `build.args`.
@@ -67,10 +67,10 @@ docker compose up --build -d           # без profile devproxy
 ## API (кратко)
 
 Префикс внутри backend: `/api/v1`  
-Снаружи (через nginx): `/extra/analysis/api/v1/...`
+Снаружи (через nginx): `/extra/analyses/api/v1/...`
 
 - `POST /auth/registration`, `/auth/login`, `/auth/logout`, `/auth/refresh`
-- `POST|GET /analysis`, `DELETE /analysis/{id}`
+- `POST|GET /analyses`, `DELETE /analyses/{id}`
 
 JWT в HttpOnly cookie (`SameSite=Lax`).
 

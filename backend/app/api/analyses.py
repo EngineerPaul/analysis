@@ -5,11 +5,11 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user_id
 from app.database import get_db
-from app.schemas.analysis import AnalysisCreate, AnalysisResponse
-from app.services.analysis_service import AnalysisService
+from app.schemas.analyses import AnalysisCreate, AnalysisResponse
+from app.services.analyses_service import AnalysesService
 
-router = APIRouter(prefix="/analysis", tags=["analysis"])
-analysis_service = AnalysisService()
+router = APIRouter(prefix="/analyses", tags=["analyses"])
+analyses_service = AnalysesService()
 
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=AnalysisResponse)
@@ -19,7 +19,7 @@ def create_analysis(
     user_id: int = Depends(get_current_user_id),
 ) -> AnalysisResponse:
     """Create a new analysis for the authenticated user."""
-    analysis = analysis_service.create(db, user_id, payload)
+    analysis = analyses_service.create(db, user_id, payload)
     return AnalysisResponse.model_validate(analysis)
 
 
@@ -29,7 +29,7 @@ def list_analyses(
     user_id: int = Depends(get_current_user_id),
 ) -> list[AnalysisResponse]:
     """Return all analyses owned by the authenticated user."""
-    items = analysis_service.list_for_user(db, user_id)
+    items = analyses_service.list_for_user(db, user_id)
     return [AnalysisResponse.model_validate(item) for item in items]
 
 
@@ -40,5 +40,5 @@ def delete_analysis(
     user_id: int = Depends(get_current_user_id),
 ) -> Response:
     """Delete an analysis belonging to the authenticated user."""
-    analysis_service.delete(db, user_id, analysis_id)
+    analyses_service.delete(db, user_id, analysis_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

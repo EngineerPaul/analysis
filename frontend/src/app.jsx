@@ -5,7 +5,7 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 
-const ROOT = import.meta.env.VITE_ROOT_PATH || '/extra/analysis';
+const ROOT = import.meta.env.VITE_ROOT_PATH || '/extra/analyses';
 
 /**
  * Root application with routing.

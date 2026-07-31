@@ -3,7 +3,7 @@
 Документ описывает полный процесс настройки непрерывной интеграции и деплоя для проекта **Мои анализы**.
 
 Репозиторий: `https://github.com/EngineerPaul/analysis.git`  
-Прод-путь на сервере: `/var/www/Diary-project/analysis`  
+Прод-путь на сервере: `/var/www/Diary-project/analyses`  
 Ветка деплоя: `master`
 
 Схема:
@@ -24,7 +24,7 @@ Profile `devproxy` на проде **не** используется.
 
 На сервере уже:
 
-1. Склонирован репозиторий в `/var/www/Diary-project/analysis`
+1. Склонирован репозиторий в `/var/www/Diary-project/analyses`
 2. Есть файл `.env` (из `.env.example`, с продовыми значениями) — **не в git**
 3. Сеть Docker: `docker network create extra_services` (если ещё нет)
 4. Сервисы хотя бы раз успешно поднимались вручную
@@ -34,7 +34,7 @@ Profile `devproxy` на проде **не** используется.
 Проверка вручную:
 
 ```bash
-cd /var/www/Diary-project/analysis
+cd /var/www/Diary-project/analyses
 git status
 docker compose ps
 ```
@@ -91,7 +91,7 @@ ssh -i ./github_actions_ed25519 -p 22 USER@HOST
 | `SSH_USER` | пользователь SSH | то, что до `@` |
 | `SSH_PORT` | порт SSH | обычно `22`; если `ssh -p 2222` — пишите `2222` |
 | `SSH_PRIVATE_KEY` | весь приватный ключ | содержимое `github_actions_ed25519`, включая `BEGIN`/`END` |
-| `DEPLOY_PATH` | путь к проекту | `/var/www/Diary-project/analysis` |
+| `DEPLOY_PATH` | путь к проекту | `/var/www/Diary-project/analyses` |
 
 Опционально:
 
@@ -149,7 +149,7 @@ CI делает `git fetch` от имени `SSH_USER`.
 Проверка:
 
 ```bash
-cd /var/www/Diary-project/analysis
+cd /var/www/Diary-project/analyses
 git remote -v
 git fetch --dry-run
 ```
@@ -163,7 +163,7 @@ git fetch --dry-run
 1. Закоммитить и запушить workflow-файлы в `master`
 2. GitHub → **Actions** — дождаться зелёного CI
 3. Job Deploy должен зайти по SSH и пересобрать контейнеры
-4. Проверить сайт: `https://daystream.ru/extra/analysis/`
+4. Проверить сайт: `https://daystream.ru/extra/analyses/`
 
 Ручной запуск: **Actions** → нужный workflow → **Run workflow** (`workflow_dispatch`), если он включён в yaml.
 
@@ -185,7 +185,7 @@ git fetch --dry-run
 
 ## 7. Чеклист «CI готов»
 
-- [ ] Проект на сервере в `/var/www/Diary-project/analysis` работает вручную
+- [ ] Проект на сервере в `/var/www/Diary-project/analyses` работает вручную
 - [ ] Есть `.env` на сервере
 - [ ] Сеть `extra_services` существует
 - [ ] Создан ключ `github_actions_ed25519` / `.pub`

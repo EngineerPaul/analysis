@@ -77,5 +77,5 @@ def test_logout_and_refresh(client: TestClient) -> None:
 
 
 def test_protected_without_auth(client: TestClient) -> None:
-    response = client.get("/api/v1/analysis")
+    response = client.get("/api/v1/analyses")
     assert response.status_code == 401

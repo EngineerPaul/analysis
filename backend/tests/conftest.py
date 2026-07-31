@@ -3,7 +3,7 @@
 import os
 from collections.abc import Generator
 
-# Force test settings: compose injects prod-like COOKIE_PATH=/extra/analysis,
+# Force test settings: compose injects prod-like COOKIE_PATH=/extra/analyses,
 # and setdefault() would not override it — cookies then never attach to /api/*.
 os.environ["DATABASE_URL"] = "sqlite+pysqlite://"
 os.environ["SECRET_KEY"] = "test-secret-key"

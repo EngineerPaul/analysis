@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Runs on the server after git reset --hard (see .github/workflows/ci-cd.yml).
-DEPLOY_PATH="${DEPLOY_PATH:-/var/www/Diary-project/analysis}"
+DEPLOY_PATH="${DEPLOY_PATH:-/var/www/Diary-project/analyses}"
 DEPLOY_BRANCH="${DEPLOY_BRANCH:-master}"
 
 cd "$DEPLOY_PATH"

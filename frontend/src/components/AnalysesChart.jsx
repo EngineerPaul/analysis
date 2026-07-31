@@ -16,7 +16,7 @@ function toPoints(points) {
  * Custom SVG chart for analysis values and optional reference lines.
  * @param {{items: Array}} props
  */
-export default function AnalysisChart({ items }) {
+export default function AnalysesChart({ items }) {
   const [tooltip, setTooltip] = useState(null);
   const width = 760;
   const height = 360;
@@ -88,7 +88,7 @@ export default function AnalysisChart({ items }) {
 
   return (
     <div className="chart-wrap">
-      <svg viewBox={`0 0 ${width} ${height}`} className="analysis-chart" role="img" aria-label="График анализов">
+      <svg viewBox={`0 0 ${width} ${height}`} className="analyses-chart" role="img" aria-label="График анализов">
         {model.xTicks.map((tick) => (
           <g key={`x-${tick.x}`}>
             <line x1={tick.x} y1={padding.top} x2={tick.x} y2={height - padding.bottom} className="grid-line" />

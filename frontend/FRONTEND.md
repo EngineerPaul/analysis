@@ -8,7 +8,7 @@
 - React Router 6 (`BrowserRouter` + `basename`)
 - Vite
 
-Базовый путь задаётся `VITE_ROOT_PATH` (по умолчанию `/extra/analysis`).
+Базовый путь задаётся `VITE_ROOT_PATH` (по умолчанию `/extra/analyses`).
 
 ## Точки входа
 
@@ -42,10 +42,10 @@
 ## Компоненты
 
 - `Modal` — модальные окна
-- `AnalysisForm` — создание анализа + подсказки названий
+- `AnalysesForm` — создание анализа + подсказки названий
 - `GraphForm` — выбор названия/периода для графика
 - `DataTable` — общие таблицы
-- `AnalysisChart` — SVG-график (зелёные значения, оранжевые референсы)
+- `AnalysesChart` — SVG-график (зелёные значения, оранжевые референсы)
 
 ## Стили
 
@@ -61,4 +61,4 @@ docker compose up --build -d
 docker compose --profile devproxy up --build -d
 ```
 
-Открывать UI: `http://127.0.0.1:8000/extra/analysis/`
+Открывать UI: `http://127.0.0.1:8000/extra/analyses/`

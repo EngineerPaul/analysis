@@ -1,11 +1,11 @@
 services:
   backend:
     build: ./backend
-    container_name: analysis_backend
+    container_name: analyses_backend
     env_file:
       - .env
     # ports:
-    #   - "9002:9002"
+    #   - "8000:8000"
     volumes:
       - ./backend/logs:/app/logs
       - ./backend/data:/data
@@ -17,12 +17,12 @@ services:
     build:
       context: ./frontend
       args:
-        # Берётся из корневого .env или по умолчанию /extra/analysis
+        # Берётся из корневого .env или по умолчанию /extra/analyses
         # В рантайм frontend это не нужно: префикс уже «зашит» в собранный JS.
-        VITE_ROOT_PATH: ${ROOT_PATH:-/extra/analysis}
-    container_name: analysis_frontend
+        VITE_ROOT_PATH: ${ROOT_PATH:-/extra/analyses}
+    container_name: analyses_frontend
     # ports:
-    #   - "9001:9001"
+    #   - "80:80"
     networks:
       - default
       - extra_net

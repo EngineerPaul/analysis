@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import AnalysisChart from '../components/AnalysisChart';
+import AnalysesChart from '../components/AnalysesChart';
 import DataTable from '../components/DataTable';
 import { useAnalyses } from '../context/AnalysesContext';
 import { formatDate, formatNumber } from '../utils/validators';
@@ -104,7 +104,7 @@ export default function GraphPage() {
         </div>
 
         <div className="chart-zone">
-          {built && chartItems.length ? <AnalysisChart items={chartItems} /> : (
+          {built && chartItems.length ? <AnalysesChart items={chartItems} /> : (
             <div className="chart-empty">Выберите анализ и нажмите «Построить»</div>
           )}
         </div>

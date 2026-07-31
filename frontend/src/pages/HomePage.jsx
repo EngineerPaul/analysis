@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AnalysisForm from '../components/AnalysisForm';
+import AnalysesForm from '../components/AnalysesForm';
 import DataTable from '../components/DataTable';
 import GraphForm from '../components/GraphForm';
 import Modal from '../components/Modal';
@@ -52,7 +52,7 @@ export default function HomePage() {
    * @param {object} payload
    */
   async function handleCreate(payload) {
-    const response = await apiRequest('/analysis', {
+    const response = await apiRequest('/analyses', {
       method: 'POST',
       body: JSON.stringify(payload),
     });
@@ -69,7 +69,7 @@ export default function HomePage() {
    * @param {object} row
    */
   async function handleDelete(row) {
-    const response = await apiRequest(`/analysis/${row.id}`, { method: 'DELETE' });
+    const response = await apiRequest(`/analyses/${row.id}`, { method: 'DELETE' });
     if (response.status === 204) removeLocal(row.id);
   }
 
@@ -103,7 +103,7 @@ export default function HomePage() {
       <div className="content">
         <div className="toolbar">
           <div className="toolbar-left">
-            <button type="button" className="btn primary" onClick={() => setModal('analysis')}>
+            <button type="button" className="btn primary" onClick={() => setModal('analyses')}>
               <span className="btn-text">Добавить анализ</span>
               <img className="btn-icon" src={`${import.meta.env.BASE_URL}icons/add.svg`} alt="" />
             </button>
@@ -143,9 +143,9 @@ export default function HomePage() {
         <DataTable columns={columns} rows={visible} onDelete={handleDelete} />
       </div>
 
-      {modal === 'analysis' ? (
+      {modal === 'analyses' ? (
         <Modal title="Добавление анализа" onClose={() => setModal(null)}>
-          <AnalysisForm onSuccess={handleCreate} onCancel={() => setModal(null)} />
+          <AnalysesForm onSuccess={handleCreate} onCancel={() => setModal(null)} />
         </Modal>
       ) : null}
       {modal === 'graph' ? (

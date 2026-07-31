@@ -50,7 +50,7 @@ jobs:
           script_stop: true
           script: |
             export DEPLOY_PATH='${{ secrets.DEPLOY_PATH }}'
-            if [ -z "$DEPLOY_PATH" ]; then export DEPLOY_PATH="/var/www/Diary-project/analysis"; fi
+            if [ -z "$DEPLOY_PATH" ]; then export DEPLOY_PATH="/var/www/Diary-project/analyses"; fi
             export DEPLOY_BRANCH='${{ secrets.DEPLOY_BRANCH }}'
             if [ -z "$DEPLOY_BRANCH" ]; then export DEPLOY_BRANCH="master"; fi
             cd "$DEPLOY_PATH"

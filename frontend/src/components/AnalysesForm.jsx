@@ -6,7 +6,7 @@ import { useAnalyses } from '../context/AnalysesContext';
  * Form for creating a new analysis inside a modal.
  * @param {{onSuccess: Function, onCancel: Function}} props
  */
-export default function AnalysisForm({ onSuccess, onCancel }) {
+export default function AnalysesForm({ onSuccess, onCancel }) {
   const { history, names } = useAnalyses();
   const defaults = useMemo(() => {
     const org = sessionStorage.getItem('last_org') || '';

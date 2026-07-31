@@ -2,7 +2,7 @@
  * API helper with credentials and automatic refresh on 401.
  */
 
-const ROOT = import.meta.env.VITE_ROOT_PATH || '/extra/analysis';
+const ROOT = import.meta.env.VITE_ROOT_PATH || '/extra/analyses';
 const API_BASE = `${ROOT}/api/v1`;
 
 /**

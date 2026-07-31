@@ -1,11 +1,11 @@
 # NGINX
 
-Встраивание сервиса в `https://daystream.ru/extra/analysis/`.
+Встраивание сервиса в `https://daystream.ru/extra/analyses/`.
 
 ## Как связаны сервисы
 
 В `docker-compose.yml` порты backend/frontend на хост **не публикуются**.  
-Контейнеры `analysis_backend` и `analysis_frontend` висят во внешней сети `extra_services`.
+Контейнеры `analyses_backend` и `analyses_frontend` висят во внешней сети `extra_services`.
 
 Внешний (prod) nginx должен быть в той же сети и ходить по **именам контейнеров**, не через `127.0.0.1`.
 
@@ -16,14 +16,14 @@ docker network create extra_services   # если сети ещё нет
 
 Внутренние порты процессов:
 
-- frontend (nginx со статикой): `9001`
-- backend (uvicorn): `9002`
+- frontend (nginx со статикой): `80`
+- backend (uvicorn): `8000`
 
 ## Пример location для prod
 
 ```nginx
-location /extra/analysis/api/ {
-    proxy_pass http://analysis_backend:9002/api/;
+location /extra/analyses/api/ {
+    proxy_pass http://analyses_backend:8000/api/;
     proxy_http_version 1.1;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
@@ -31,8 +31,8 @@ location /extra/analysis/api/ {
     proxy_set_header X-Forwarded-Proto $scheme;
 }
 
-location /extra/analysis/ {
-    proxy_pass http://analysis_frontend:9001/extra/analysis/;
+location /extra/analyses/ {
+    proxy_pass http://analyses_frontend:80/extra/analyses/;
     proxy_http_version 1.1;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
@@ -40,12 +40,12 @@ location /extra/analysis/ {
     proxy_set_header X-Forwarded-Proto $scheme;
 }
 
-location = /extra/analysis {
-    return 301 /extra/analysis/;
+location = /extra/analyses {
+    return 301 /extra/analyses/;
 }
 ```
 
-В dev-прокси (`nginx/nginx.conf`) включено `absolute_redirect off`, чтобы `301` на trailing slash не сбрасывал порт (иначе `Host: 127.0.0.1:8000` превращался бы в `http://127.0.0.1/extra/analysis/`). В `frontend/nginx.conf` и на хостовом nginx (порт 80/443) это не нужно: редирект без слэша обрабатывает внешний nginx, а стандартный порт в URL и так не пишется.
+В dev-прокси (`nginx/nginx.conf`) включено `absolute_redirect off`, чтобы `301` на trailing slash не сбрасывал порт (иначе `Host: 127.0.0.1:8000` превращался бы в `http://127.0.0.1/extra/analyses/`). В `frontend/nginx.conf` и на хостовом nginx (порт 80/443) это не нужно: редирект без слэша обрабатывает внешний nginx, а стандартный порт в URL и так не пишется.
 
 После правок:
 
@@ -62,11 +62,11 @@ docker compose --profile devproxy up --build -d
 ```
 
 - слушает `localhost:8000`
-- проксирует на `analysis_frontend:9001` и `analysis_backend:9002` по docker-сети `default` проекта
+- проксирует на `analyses_frontend:80` и `analyses_backend:8000` по docker-сети `default` проекта
 
 ## Cookie / CORS
 
-- Cookie path: `/extra/analysis`
+- Cookie path: `/extra/analyses`
 - Prod: `Secure=true`, `SameSite=Lax` (или `Strict`)
 - Dev: `COOKIE_SECURE=false`
 - CORS origin prod: `https://daystream.ru`

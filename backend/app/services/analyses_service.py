@@ -1,14 +1,14 @@
-"""Analysis CRUD business logic."""
+"""Analyses CRUD business logic."""
 
 from fastapi import HTTPException, status
 from sqlalchemy import asc
 from sqlalchemy.orm import Session
 
-from app.models.analysis import Analysis
-from app.schemas.analysis import AnalysisCreate
+from app.models.analyses import Analysis
+from app.schemas.analyses import AnalysisCreate
 
 
-class AnalysisService:
+class AnalysesService:
     """Creates, lists and deletes analyses for the current user."""
 
     def create(self, db: Session, user_id: int, payload: AnalysisCreate) -> Analysis:
