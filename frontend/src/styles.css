@@ -1,7 +1,7 @@
 :root {
-  --bg: #e8f5ec;
-  --bg-soft: rgba(232, 245, 236, 0.55);
-  --surface: #f7fcf8;
+  --bg: #dce9e0;
+  --bg-soft: rgba(220, 233, 224, 0.55);
+  --surface: #e4ece6;
   --primary: #2f9e62;
   --primary-dark: #247a4b;
   --primary-deep: #1f5f3c;
@@ -9,8 +9,8 @@
   --muted: #5d7a68;
   --danger: #d64545;
   --border: #c5e0d0;
-  --row-a: #ffffff;
-  --row-b: #dff5e8;
+  --row-a: #f2f6f3;
+  --row-b: #d4e9dc;
   --shadow: 0 10px 30px rgba(31, 95, 60, 0.08);
   font-family: "Segoe UI", "Trebuchet MS", sans-serif;
   color: var(--text);
@@ -22,8 +22,8 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(47, 158, 98, 0.18), transparent 40%),
-    linear-gradient(180deg, var(--bg), #f3faf5);
+    radial-gradient(circle at top left, rgba(45, 150, 93, 0.18), transparent 40%),
+    linear-gradient(180deg, var(--bg), #e7eee9);
   color: var(--text);
 }
 
@@ -96,7 +96,7 @@ input, select, textarea {
   border-radius: 10px;
   padding: 10px 12px;
   font: inherit;
-  background: #fff;
+  background: #f2f6f3;
 }
 
 input:focus, select:focus, textarea:focus {
@@ -104,7 +104,7 @@ input:focus, select:focus, textarea:focus {
   border-color: var(--primary);
 }
 
-.autofilled { background: #e7f8ee; }
+.autofilled { background: #dbece2; }
 
 .field-error, .server-error {
   color: var(--danger);
@@ -127,10 +127,10 @@ input:focus, select:focus, textarea:focus {
 
 .btn.primary { background: var(--primary); color: #fff; }
 .btn.primary:hover { background: var(--primary-dark); }
-.btn.danger { background: #f8e8e8; color: var(--danger); }
-.btn.danger:hover { background: #f3d4d4; }
+.btn.danger { background: #ecdcdc; color: var(--danger); }
+.btn.danger:hover { background: #e7c9c9; }
 .btn.ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
-.btn.ghost:hover { background: #eef6f1; }
+.btn.ghost:hover { background: #e2eae5; }
 .btn.center { align-self: center; }
 .btn-icon { display: none; width: 22px; height: 22px; }
 
@@ -168,12 +168,12 @@ input:focus, select:focus, textarea:focus {
   vertical-align: middle;
 }
 .data-table thead th {
-  background: #cde8d9;
+  background: #c3dcce;
   color: var(--primary-deep);
 }
 .data-table tbody tr:nth-child(odd) td { background: var(--row-a); }
 .data-table tbody tr:nth-child(even) td { background: var(--row-b); }
-.data-table tbody tr:hover td { background: #d0ecdc; }
+.data-table tbody tr:hover td { background: #c6e0d1; }
 
 .icon-delete {
   width: 34px;
@@ -216,7 +216,7 @@ input:focus, select:focus, textarea:focus {
   justify-content: space-between;
   align-items: center;
   padding: 14px 16px;
-  background: #d7efe2;
+  background: #cce3d7;
 }
 .modal-header h2 { margin: 0; font-size: 1.15rem; }
 .modal-close {
@@ -241,7 +241,7 @@ input:focus, select:focus, textarea:focus {
   margin: 0;
   padding: 0;
   list-style: none;
-  background: #fff;
+  background: #f2f6f3;
   border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
@@ -250,17 +250,17 @@ input:focus, select:focus, textarea:focus {
 .suggestions button {
   width: 100%;
   border: none;
-  background: #fff;
+  background: #f2f6f3;
   text-align: left;
   padding: 10px 12px;
 }
-.suggestions button:hover { background: #eaf7ef; }
+.suggestions button:hover { background: #deebe3; }
 
 .chart-wrap { position: relative; margin: 12px 0 20px; }
 .analysis-chart {
   width: 100%;
   height: auto;
-  background: #fbfffc;
+  background: #eef2ef;
   border: 1px solid var(--border);
   border-radius: 12px;
 }
