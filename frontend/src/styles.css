@@ -177,8 +177,9 @@ input:focus, select:focus, textarea:focus {
 .data-table tbody tr:hover td { background: #c6e0d1; }
 
 .data-table .cell-note {
-  max-width: 11rem;
-  width: 11rem;
+  max-width: 200px;
+  min-width: 125px;
+  width: 200px;
   white-space: normal;
   overflow-wrap: anywhere;
   word-break: break-word;
