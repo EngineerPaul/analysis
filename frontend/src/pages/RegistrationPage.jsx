@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiRequest, readJson } from '../api/client';
-import { LOGIN_RE, NAME_RE, validatePassword } from '../utils/validators';
+import { CYRILLIC_RE, NAME_RE, validateLogin, validatePassword } from '../utils/validators';
 
 /**
  * Registration page.
@@ -19,12 +19,19 @@ export default function RegistrationPage() {
   const [serverError, setServerError] = useState('');
 
   /**
-   * Update a single form field.
+   * Update a single form field; show Cyrillic error immediately for login/password.
    * @param {string} key
    * @param {string} value
    */
   function update(key, value) {
     setForm((prev) => ({ ...prev, [key]: value }));
+    if ((key === 'login' || key === 'password' || key === 'password2') && CYRILLIC_RE.test(value)) {
+      const message = key === 'login'
+        ? 'Логин не должен содержать кириллицу'
+        : 'Пароль не должен содержать кириллицу';
+      setErrors((prev) => ({ ...prev, [key]: message }));
+      return;
+    }
     setErrors((prev) => ({ ...prev, [key]: '' }));
   }
 
@@ -34,10 +41,15 @@ export default function RegistrationPage() {
    */
   function validate() {
     const next = {};
-    if (!LOGIN_RE.test(form.login)) next.login = 'Логин: 6-20 латиница/цифры';
+    const loginError = validateLogin(form.login);
+    if (loginError) next.login = loginError;
     const passwordError = validatePassword(form.password);
     if (passwordError) next.password = passwordError;
-    if (form.password !== form.password2) next.password2 = 'Пароли не совпадают';
+    if (CYRILLIC_RE.test(form.password2)) {
+      next.password2 = 'Пароль не должен содержать кириллицу';
+    } else if (form.password !== form.password2) {
+      next.password2 = 'Пароли не совпадают';
+    }
     if (!NAME_RE.test(form.name)) next.name = 'Имя: только буквы, 2-30';
     if (!NAME_RE.test(form.surname)) next.surname = 'Фамилия: только буквы, 2-30';
     setErrors(next);

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiRequest, readJson } from '../api/client';
-import { LOGIN_RE, validatePassword } from '../utils/validators';
+import { CYRILLIC_RE, validateLogin, validatePassword } from '../utils/validators';
 
 /**
  * Login page.
@@ -13,12 +13,21 @@ export default function LoginPage() {
   const [serverError, setServerError] = useState('');
 
   /**
-   * Update a form field.
+   * Update a form field; show Cyrillic error immediately while typing.
    * @param {string} key
    * @param {string} value
    */
   function update(key, value) {
     setForm((prev) => ({ ...prev, [key]: value }));
+    if ((key === 'login' || key === 'password') && CYRILLIC_RE.test(value)) {
+      setErrors((prev) => ({
+        ...prev,
+        [key]: key === 'login'
+          ? 'Логин не должен содержать кириллицу'
+          : 'Пароль не должен содержать кириллицу',
+      }));
+      return;
+    }
     setErrors((prev) => ({ ...prev, [key]: '' }));
   }
 
@@ -30,7 +39,8 @@ export default function LoginPage() {
     event.preventDefault();
     setServerError('');
     const next = {};
-    if (!LOGIN_RE.test(form.login)) next.login = 'Некорректный логин';
+    const loginError = validateLogin(form.login);
+    if (loginError) next.login = loginError;
     const passwordError = validatePassword(form.password);
     if (passwordError) next.password = passwordError;
     setErrors(next);

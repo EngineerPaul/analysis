@@ -2,7 +2,12 @@
 
 from pydantic import BaseModel, Field, field_validator
 
-from app.utils.validators import LOGIN_PATTERN, NAME_PATTERN, validate_password_chars
+from app.utils.validators import (
+    CYRILLIC_PATTERN,
+    LOGIN_PATTERN,
+    NAME_PATTERN,
+    validate_password_chars,
+)
 
 
 class RegistrationRequest(BaseModel):
@@ -16,6 +21,8 @@ class RegistrationRequest(BaseModel):
     @field_validator("login")
     @classmethod
     def check_login(cls, value: str) -> str:
+        if CYRILLIC_PATTERN.search(value):
+            raise ValueError("Login must not contain Cyrillic letters")
         if not LOGIN_PATTERN.fullmatch(value):
             raise ValueError("Login must contain only Latin letters and digits")
         return value
@@ -42,6 +49,8 @@ class LoginRequest(BaseModel):
     @field_validator("login")
     @classmethod
     def check_login(cls, value: str) -> str:
+        if CYRILLIC_PATTERN.search(value):
+            raise ValueError("Login must not contain Cyrillic letters")
         if not LOGIN_PATTERN.fullmatch(value):
             raise ValueError("Login must contain only Latin letters and digits")
         return value

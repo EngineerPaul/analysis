@@ -32,6 +32,7 @@ def CookieManager_access_present(response) -> bool:
         ({"login": "validuser", "password": "123", "name": "Анна", "surname": "Сидорова"}, 422),
         ({"login": "validuser", "password": "secret1", "name": "A", "surname": "Сидорова"}, 422),
         ({"login": "юзер123", "password": "secret1", "name": "Анна", "surname": "Сидорова"}, 422),
+        ({"login": "validuser", "password": "пароль12", "name": "Анна", "surname": "Сидорова"}, 422),
         ({"login": "validuser", "password": "secret1", "name": "Анна1", "surname": "Сидорова"}, 422),
         ({"password": "secret1", "name": "Анна", "surname": "Сидорова"}, 422),
         ({"login": "validuser", "name": "Анна", "surname": "Сидорова"}, 422),

@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from sqlalchemy import DateTime, Integer, String, func
+from sqlalchemy import CheckConstraint, DateTime, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -12,6 +12,13 @@ class User(Base):
     """Registered application user."""
 
     __tablename__ = "users"
+    __table_args__ = (
+        # Plain password is not stored; Cyrillic ban for passwords is app-level only.
+        CheckConstraint(
+            "login NOT GLOB '*[^a-zA-Z0-9]*' AND length(login) BETWEEN 6 AND 20",
+            name="login_latin_alnum_only",
+        ),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     login: Mapped[str] = mapped_column(String(20), unique=True, nullable=False, index=True)
