@@ -6,7 +6,7 @@ import GraphForm from '../components/GraphForm';
 import Modal from '../components/Modal';
 import { useAnalyses } from '../context/AnalysesContext';
 import { apiRequest, readJson } from '../api/client';
-import { formatDate } from '../utils/validators';
+import { formatDate, formatNumber } from '../utils/validators';
 
 /**
  * Main page with toolbar and analyses table.
@@ -84,11 +84,15 @@ export default function HomePage() {
   const columns = [
     { key: 'name', title: 'Название' },
     { key: 'date', title: 'Дата', render: (row) => formatDate(row.date) },
-    { key: 'value', title: 'Значение' },
+    { key: 'value', title: 'Значение', render: (row) => formatNumber(row.value) },
     {
       key: 'refs',
       title: 'Референс',
-      render: (row) => (row.ref_lower != null ? `${row.ref_lower} — ${row.ref_upper}` : '—'),
+      render: (row) => (
+        row.ref_lower != null
+          ? `${formatNumber(row.ref_lower)} — ${formatNumber(row.ref_upper)}`
+          : '—'
+      ),
     },
     { key: 'organization', title: 'Организация', render: (row) => row.organization || '—' },
     { key: 'note', title: 'Примечание', render: (row) => row.note || '—' },

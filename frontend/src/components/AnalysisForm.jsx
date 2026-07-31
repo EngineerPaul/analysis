@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ANALYSIS_NAME_RE, ORG_RE } from '../utils/validators';
+import { ANALYSIS_NAME_RE, ORG_RE, formatNumber } from '../utils/validators';
 import { useAnalyses } from '../context/AnalysesContext';
 
 /**
@@ -61,8 +61,8 @@ export default function AnalysisForm({ onSuccess, onCancel }) {
     if (!match) return;
     const next = {
       organization: sessionStorage.getItem('last_org') || match.organization || '',
-      ref_lower: match.ref_lower ?? '',
-      ref_upper: match.ref_upper ?? '',
+      ref_lower: match.ref_lower != null ? formatNumber(match.ref_lower) : '',
+      ref_upper: match.ref_upper != null ? formatNumber(match.ref_upper) : '',
     };
     setForm((prev) => ({ ...prev, ...next }));
     setHighlight({ organization: true, ref_lower: true, ref_upper: true });

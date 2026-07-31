@@ -54,3 +54,15 @@ export function formatDate(iso) {
   const [y, m, d] = iso.split('-');
   return `${d}.${m}.${y}`;
 }
+
+/**
+ * Format a numeric value for display (2 decimal places).
+ * @param {number|string|null|undefined} value
+ * @returns {string}
+ */
+export function formatNumber(value) {
+  if (value === null || value === undefined || value === '') return '';
+  const n = Number(value);
+  if (Number.isNaN(n)) return String(value);
+  return n.toFixed(2);
+}

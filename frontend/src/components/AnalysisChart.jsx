@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { formatNumber } from '../utils/validators';
 
 const MONTHS = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
 
@@ -148,7 +149,7 @@ export default function AnalysisChart({ items }) {
       </svg>
       {tooltip ? (
         <div className="chart-tooltip" style={{ left: tooltip.left, top: tooltip.top }}>
-          <div>Значение: {tooltip.value}</div>
+          <div>Значение: {formatNumber(tooltip.value)}</div>
           <div>Дата: {tooltip.date}</div>
           {tooltip.note ? <div>Примечание: {tooltip.note}</div> : null}
         </div>

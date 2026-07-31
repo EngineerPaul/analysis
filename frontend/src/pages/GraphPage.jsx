@@ -3,7 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import AnalysisChart from '../components/AnalysisChart';
 import DataTable from '../components/DataTable';
 import { useAnalyses } from '../context/AnalysesContext';
-import { formatDate } from '../utils/validators';
+import { formatDate, formatNumber } from '../utils/validators';
 
 /**
  * Build filtered rows for the selected analysis and period.
@@ -62,11 +62,15 @@ export default function GraphPage() {
   }, [built, loaded, history, name, begin, end]);
 
   const columns = useMemo(() => [
-    { key: 'value', title: 'Значение' },
+    { key: 'value', title: 'Значение', render: (row) => formatNumber(row.value) },
     {
       key: 'refs',
       title: 'Референсные значения',
-      render: (row) => (row.ref_lower != null ? `${row.ref_lower} — ${row.ref_upper}` : '—'),
+      render: (row) => (
+        row.ref_lower != null
+          ? `${formatNumber(row.ref_lower)} — ${formatNumber(row.ref_upper)}`
+          : '—'
+      ),
     },
     { key: 'date', title: 'Дата', render: (row) => formatDate(row.date) },
     { key: 'note', title: 'Примечание', render: (row) => row.note || '—' },
@@ -86,7 +90,7 @@ export default function GraphPage() {
     <div className="page">
       <div className="content">
         <Link className="back-link" to="/">← На Главную</Link>
-        <h2 className="section-title">Тип анализа:</h2>
+        <h2 className="section-title">Создание графика:</h2>
         <div className="filters graph-filters">
           <select value={name} onChange={(e) => setName(e.target.value)}>
             <option value="">-----</option>
