@@ -164,7 +164,7 @@ input:focus, select:focus, textarea:focus {
   padding: 10px 12px;
   border-bottom: 1px solid var(--border);
   text-align: left;
-  vertical-align: top;
+  vertical-align: middle;
 }
 .data-table thead th {
   background: #cde8d9;
