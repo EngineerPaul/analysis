@@ -85,8 +85,8 @@ export default function GraphPage() {
   return (
     <div className="page">
       <div className="content">
-        <Link className="back-link" to="/">← на главную</Link>
-        <h2 className="section-title">тип анализа:</h2>
+        <Link className="back-link" to="/">← На Главную</Link>
+        <h2 className="section-title">Тип анализа:</h2>
         <div className="filters graph-filters">
           <select value={name} onChange={(e) => setName(e.target.value)}>
             <option value="">-----</option>

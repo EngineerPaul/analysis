@@ -73,7 +73,7 @@ export default function RegistrationPage() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <Link className="back-link" to="/login">← На страницу входа</Link>
+        <Link className="back-link" to="/login">← На страницу Входа</Link>
         <h1>Регистрация</h1>
         <form className="stack-form" onSubmit={handleSubmit}>
           {[
