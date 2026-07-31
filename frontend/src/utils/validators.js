@@ -85,3 +85,15 @@ export function formatNumber(value) {
   if (Number.isNaN(n)) return String(value);
   return n.toFixed(2);
 }
+
+/**
+ * Parse a user-entered number; comma and dot both work as decimal separator.
+ * @param {string|number|null|undefined} raw
+ * @returns {number}
+ */
+export function parseNumber(raw) {
+  if (raw === null || raw === undefined) return Number.NaN;
+  const normalized = String(raw).trim().replace(',', '.');
+  if (normalized === '') return Number.NaN;
+  return Number(normalized);
+}

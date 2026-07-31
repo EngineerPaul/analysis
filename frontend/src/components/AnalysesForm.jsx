@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ANALYSIS_NAME_RE, ORG_RE, formatNumber } from '../utils/validators';
+import { ANALYSIS_NAME_RE, ORG_RE, formatNumber, parseNumber } from '../utils/validators';
 import { useAnalyses } from '../context/AnalysesContext';
 
 /**
@@ -76,14 +76,21 @@ export default function AnalysesForm({ onSuccess, onCancel }) {
     const next = {};
     if (!ANALYSIS_NAME_RE.test(form.name.trim())) next.name = 'Некорректное название';
     if (!form.date) next.date = 'Укажите дату';
-    if (form.value === '' || Number.isNaN(Number(form.value))) next.value = 'Укажите число';
+    if (form.value === '' || Number.isNaN(parseNumber(form.value))) next.value = 'Укажите число';
     const hasUpper = form.ref_upper !== '';
     const hasLower = form.ref_lower !== '';
     if (hasUpper !== hasLower) {
       next.ref_upper = 'Заполните оба референса или ни одного';
       next.ref_lower = 'Заполните оба референса или ни одного';
-    } else if (hasUpper && Number(form.ref_upper) <= Number(form.ref_lower)) {
-      next.ref_upper = 'Верхнее должно быть больше нижнего';
+    } else if (hasUpper) {
+      const upper = parseNumber(form.ref_upper);
+      const lower = parseNumber(form.ref_lower);
+      if (Number.isNaN(upper) || Number.isNaN(lower)) {
+        next.ref_upper = 'Укажите число';
+        next.ref_lower = 'Укажите число';
+      } else if (upper <= lower) {
+        next.ref_upper = 'Верхнее должно быть больше нижнего';
+      }
     }
     if (form.organization && !ORG_RE.test(form.organization)) {
       next.organization = 'Некорректная организация';
@@ -105,9 +112,9 @@ export default function AnalysesForm({ onSuccess, onCancel }) {
       await onSuccess({
         name: form.name.trim(),
         date: form.date,
-        value: Number(form.value),
-        ref_upper: form.ref_upper === '' ? null : Number(form.ref_upper),
-        ref_lower: form.ref_lower === '' ? null : Number(form.ref_lower),
+        value: parseNumber(form.value),
+        ref_upper: form.ref_upper === '' ? null : parseNumber(form.ref_upper),
+        ref_lower: form.ref_lower === '' ? null : parseNumber(form.ref_lower),
         organization: form.organization || null,
         note: form.note || null,
       });
