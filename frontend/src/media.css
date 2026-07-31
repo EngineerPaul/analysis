@@ -1,13 +1,35 @@
 @media (max-width: 768px) {
   .content { padding: 14px; border-radius: 14px; }
-  .toolbar { flex-direction: column; align-items: stretch; }
-  .toolbar-left { width: 100%; }
-  .toolbar .btn {
+  .toolbar {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .toolbar-left {
     flex: 1;
+    min-width: 0;
+    display: flex;
+    gap: 8px;
+  }
+  .toolbar-left .btn {
+    flex: 1 1 0;
+    min-width: 0;
     min-height: 44px;
   }
+  .toolbar > .btn.danger {
+    flex: 0 0 44px;
+    width: 44px;
+    min-width: 44px;
+    max-width: 44px;
+    min-height: 44px;
+    padding: 0;
+  }
   .btn-text { display: none; }
-  .btn-icon { display: inline-block; }
+  .btn-icon { display: block; }
+  /* Icons are green SVGs; on primary (green) buttons they must be inverted to white. */
+  .btn.primary .btn-icon {
+    filter: brightness(0) invert(1);
+  }
   .filters, .graph-filters {
     flex-direction: column;
     align-items: stretch;

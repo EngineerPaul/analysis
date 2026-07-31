@@ -127,8 +127,8 @@ input:focus, select:focus, textarea:focus {
 
 .btn.primary { background: var(--primary); color: #fff; }
 .btn.primary:hover { background: var(--primary-dark); }
-.btn.danger { background: #ecdcdc; color: var(--danger); }
-.btn.danger:hover { background: #e7c9c9; }
+.btn.danger { background: #dd8585; color: #fff; }
+.btn.danger:hover { background: #ca6a6a; }
 .btn.ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
 .btn.ghost:hover { background: #e2eae5; }
 .btn.center { align-self: center; }
