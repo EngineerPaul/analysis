@@ -187,7 +187,11 @@ input:focus, select:focus, textarea:focus {
 }
 .icon-delete .delete-x { stroke: var(--danger); }
 .icon-delete:hover { background: var(--danger); }
-.icon-delete:hover .delete-x { stroke: #fff; }
+.icon-delete:hover .delete-x {
+  stroke: #fff;
+  stroke-width: 2.8;
+}
+.icon-delete:hover svg { transform: scale(1.3); }
 
 .modal-backdrop {
   position: fixed;
