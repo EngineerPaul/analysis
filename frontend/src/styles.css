@@ -175,6 +175,14 @@ input:focus, select:focus, textarea:focus {
 .data-table tbody tr:nth-child(even) td { background: var(--row-b); }
 .data-table tbody tr:hover td { background: #c6e0d1; }
 
+.data-table .cell-note {
+  max-width: 11rem;
+  width: 11rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .icon-delete {
   width: 34px;
   height: 34px;
