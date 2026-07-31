@@ -33,7 +33,7 @@ export default function AnalysisChart({ items }) {
     const all = [...values, ...refs];
     const minY = Math.min(...all);
     const maxY = Math.max(...all);
-    const yPad = minY === maxY ? 1 : (maxY - minY) * 0.1;
+    const yPad = minY === maxY ? 1 : (maxY - minY) * 0.15;
     const yMin = minY - yPad;
     const yMax = maxY + yPad;
     const minDate = new Date(sorted[0].date).getTime();
