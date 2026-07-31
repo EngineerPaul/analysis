@@ -10,7 +10,7 @@
   --danger: #d64545;
   --border: #c5e0d0;
   --row-a: #ffffff;
-  --row-b: #eef8f1;
+  --row-b: #dff5e8;
   --shadow: 0 10px 30px rgba(31, 95, 60, 0.08);
   font-family: "Segoe UI", "Trebuchet MS", sans-serif;
   color: var(--text);
@@ -167,12 +167,12 @@ input:focus, select:focus, textarea:focus {
   vertical-align: top;
 }
 .data-table thead th {
-  background: #dff0e6;
+  background: #cde8d9;
   color: var(--primary-deep);
 }
-.data-table tbody tr:nth-child(odd) { background: var(--row-a); }
-.data-table tbody tr:nth-child(even) { background: var(--row-b); }
-.data-table tbody tr:hover { background: #d9f0e2; }
+.data-table tbody tr:nth-child(odd) td { background: var(--row-a); }
+.data-table tbody tr:nth-child(even) td { background: var(--row-b); }
+.data-table tbody tr:hover td { background: #d0ecdc; }
 
 .icon-delete {
   width: 34px;
