@@ -357,5 +357,12 @@ input:focus, select:focus, textarea:focus {
   border-radius: 8px;
   font-size: 0.85rem;
   pointer-events: none;
-  max-width: 220px;
+  width: max-content;
+  max-width: min(300px, calc(100vw - 48px));
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  z-index: 5;
+}
+.chart-tooltip.is-left {
+  transform: translate(-12px, -10px);
 }

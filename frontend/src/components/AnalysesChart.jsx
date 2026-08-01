@@ -2,6 +2,19 @@ import { useMemo, useState } from 'react';
 import { formatNumber } from '../utils/validators';
 
 const MONTHS = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+const NOTE_PREVIEW_MAX = 100;
+const TOOLTIP_MAX_WIDTH = 300;
+
+/**
+ * Truncate note for chart tooltip.
+ * @param {string|null|undefined} note
+ * @returns {string}
+ */
+function truncateNote(note) {
+  if (!note) return '';
+  if (note.length <= NOTE_PREVIEW_MAX) return note;
+  return `${note.slice(0, NOTE_PREVIEW_MAX)}…`;
+}
 
 /**
  * Convert point array to SVG polyline points attribute.
@@ -134,14 +147,24 @@ export default function AnalysesChart({ items }) {
               key={point.id}
               className="chart-point"
               onMouseEnter={(event) => {
-                const rect = event.currentTarget.ownerSVGElement.getBoundingClientRect();
+                const svg = event.currentTarget.ownerSVGElement;
+                const svgRect = svg.getBoundingClientRect();
+                const scaleX = svgRect.width / width;
+                const scaleY = svgRect.height / height;
+                const displayX = point.x * scaleX;
+                const displayY = point.y * scaleY;
+                const maxWidth = Math.min(TOOLTIP_MAX_WIDTH, svgRect.width * 0.85);
+                const placeLeft = svgRect.width - displayX < maxWidth;
                 setHoverId(point.id);
                 setTooltip({
-                  left: event.clientX - rect.left,
-                  top: event.clientY - rect.top,
+                  top: displayY,
+                  placeLeft,
+                  // When on the left, anchor via `right` so width is not squeezed to the remaining pixels.
+                  left: placeLeft ? undefined : displayX,
+                  right: placeLeft ? svgRect.width - displayX : undefined,
                   value: point.value,
                   date: point.date,
-                  note: point.note,
+                  note: truncateNote(point.note),
                 });
               }}
               onMouseLeave={() => {
@@ -165,7 +188,14 @@ export default function AnalysesChart({ items }) {
         })}
       </svg>
       {tooltip ? (
-        <div className="chart-tooltip" style={{ left: tooltip.left, top: tooltip.top }}>
+        <div
+          className={`chart-tooltip${tooltip.placeLeft ? ' is-left' : ''}`}
+          style={{
+            top: tooltip.top,
+            left: tooltip.placeLeft ? 'auto' : tooltip.left,
+            right: tooltip.placeLeft ? tooltip.right : 'auto',
+          }}
+        >
           <div>Значение: {formatNumber(tooltip.value)}</div>
           <div>Дата: {tooltip.date}</div>
           {tooltip.note ? <div>Примечание: {tooltip.note}</div> : null}
