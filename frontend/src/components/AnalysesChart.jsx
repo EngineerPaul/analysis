@@ -18,6 +18,7 @@ function toPoints(points) {
  */
 export default function AnalysesChart({ items }) {
   const [tooltip, setTooltip] = useState(null);
+  const [hoverId, setHoverId] = useState(null);
   const width = 760;
   const height = 360;
   const padding = { top: 24, right: 24, bottom: 48, left: 56 };
@@ -126,26 +127,42 @@ export default function AnalysesChart({ items }) {
           strokeWidth="2.5"
           points={toPoints(model.valuePoints)}
         />
-        {model.valuePoints.map((point) => (
-          <circle
-            key={point.id}
-            cx={point.x}
-            cy={point.y}
-            r="5"
-            fill="#2f9e62"
-            onMouseEnter={(event) => {
-              const rect = event.currentTarget.ownerSVGElement.getBoundingClientRect();
-              setTooltip({
-                left: event.clientX - rect.left,
-                top: event.clientY - rect.top,
-                value: point.value,
-                date: point.date,
-                note: point.note,
-              });
-            }}
-            onMouseLeave={() => setTooltip(null)}
-          />
-        ))}
+        {model.valuePoints.map((point) => {
+          const active = hoverId === point.id;
+          return (
+            <g
+              key={point.id}
+              className="chart-point"
+              onMouseEnter={(event) => {
+                const rect = event.currentTarget.ownerSVGElement.getBoundingClientRect();
+                setHoverId(point.id);
+                setTooltip({
+                  left: event.clientX - rect.left,
+                  top: event.clientY - rect.top,
+                  value: point.value,
+                  date: point.date,
+                  note: point.note,
+                });
+              }}
+              onMouseLeave={() => {
+                setHoverId(null);
+                setTooltip(null);
+              }}
+            >
+              {/* Larger invisible hit area */}
+              <circle cx={point.x} cy={point.y} r="12" fill="transparent" />
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r={active ? 8 : 5}
+                fill="#2f9e62"
+              />
+              {active ? (
+                <circle cx={point.x} cy={point.y} r="3" fill="#ffffff" />
+              ) : null}
+            </g>
+          );
+        })}
       </svg>
       {tooltip ? (
         <div className="chart-tooltip" style={{ left: tooltip.left, top: tooltip.top }}>

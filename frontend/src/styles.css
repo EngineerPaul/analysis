@@ -329,6 +329,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .chart-wrap { position: relative; margin: 12px 0 20px; }
+.chart-point { cursor: pointer; }
 .analyses-chart {
   width: 100%;
   height: auto;
