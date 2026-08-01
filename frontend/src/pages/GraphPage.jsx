@@ -38,8 +38,7 @@ export default function GraphPage() {
   const [name, setName] = useState(params.get('name') || '');
   const [begin, setBegin] = useState(params.get('begin') || '');
   const [end, setEnd] = useState(params.get('end') || '');
-  const [chartItems, setChartItems] = useState([]);
-  const [built, setBuilt] = useState(Boolean(params.get('name')));
+  const [hiddenIds, setHiddenIds] = useState(() => new Set());
 
   useEffect(() => {
     (async () => {
@@ -54,13 +53,16 @@ export default function GraphPage() {
     setName(paramName);
     setBegin(params.get('begin') || '');
     setEnd(params.get('end') || '');
-    setBuilt(true);
   }, [params]);
 
   useEffect(() => {
-    if (!built || !loaded) return;
-    setChartItems(filterRows(history, name, begin, end));
-  }, [built, loaded, history, name, begin, end]);
+    setHiddenIds(new Set());
+  }, [name, begin, end]);
+
+  const chartItems = useMemo(() => {
+    if (!loaded || !name) return [];
+    return filterRows(history, name, begin, end).filter((item) => !hiddenIds.has(item.id));
+  }, [loaded, history, name, begin, end, hiddenIds]);
 
   const columns = useMemo(() => [
     { key: 'value', title: 'Значение', render: (row) => formatNumber(row.value) },
@@ -77,38 +79,33 @@ export default function GraphPage() {
     { key: 'note', title: 'Примечание', render: (row) => row.note || '—' },
   ], []);
 
-  /**
-   * Validate filters and rebuild chart dataset.
-   */
-  function handleBuild() {
-    if (!name) return;
-    if (begin && end && begin > end) return;
-    setBuilt(true);
-    setChartItems(filterRows(history, name, begin, end));
-  }
-
   return (
     <div className="page">
       <div className="content">
         <Link className="back-link" to="/">← На Главную</Link>
-        <h2 className="section-title">Создание графика:</h2>
+        <h2 className="section-title">Создание графика</h2>
         <div className="filters graph-filters">
           <ScrollableSelect options={names} value={name} onChange={setName} />
           <input type="date" value={begin} onChange={(e) => setBegin(e.target.value)} />
           <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} />
-          <button type="button" className="btn primary" onClick={handleBuild}>Построить</button>
         </div>
 
         <div className="chart-zone">
-          {built && chartItems.length ? <AnalysesChart items={chartItems} /> : (
-            <div className="chart-empty">Выберите анализ и нажмите «Построить»</div>
+          {chartItems.length ? (
+            <AnalysesChart items={chartItems} />
+          ) : (
+            <div className="chart-empty">
+              {name ? 'Нет данных за выбранный период' : 'Выберите анализ'}
+            </div>
           )}
         </div>
 
         <DataTable
           columns={columns}
           rows={chartItems}
-          onDelete={(row) => setChartItems((prev) => prev.filter((item) => item.id !== row.id))}
+          onDelete={(row) => {
+            setHiddenIds((prev) => new Set(prev).add(row.id));
+          }}
         />
       </div>
     </div>

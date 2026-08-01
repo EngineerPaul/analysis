@@ -53,6 +53,13 @@
   .filters-dates .dash {
     display: none;
   }
+  /* Phone: keep list in document flow (no overlay jump). */
+  .scroll-select__list {
+    position: static;
+    box-shadow: none;
+    margin-top: 4px;
+    max-height: min(240px, 40dvh);
+  }
   .auth-card { padding: 18px; }
 }
 
