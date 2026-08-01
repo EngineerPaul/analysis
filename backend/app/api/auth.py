@@ -3,8 +3,9 @@
 from fastapi import APIRouter, Cookie, Depends, Response, status
 from sqlalchemy.orm import Session
 
+from app.api.deps import get_current_user_id
 from app.database import get_db
-from app.schemas.auth import LoginRequest, MessageResponse, RegistrationRequest
+from app.schemas.auth import LoginRequest, MessageResponse, RegistrationRequest, UserPublic
 from app.services.auth_service import AuthService
 from app.utils.cookies import CookieManager
 
@@ -13,30 +14,40 @@ auth_service = AuthService()
 cookie_manager = CookieManager()
 
 
-@router.post("/registration", status_code=status.HTTP_201_CREATED, response_model=MessageResponse)
+@router.post("/registration", status_code=status.HTTP_201_CREATED, response_model=UserPublic)
 def register(
     payload: RegistrationRequest,
     response: Response,
     db: Session = Depends(get_db),
-) -> MessageResponse:
+) -> UserPublic:
     """Register a new user and set auth cookies."""
     user = auth_service.register(db, payload)
     access, refresh = auth_service.issue_tokens(user.id)
     cookie_manager.set_tokens(response, access, refresh)
-    return MessageResponse(message="Registered successfully")
+    return UserPublic.model_validate(user)
 
 
-@router.post("/login", response_model=MessageResponse)
+@router.post("/login", response_model=UserPublic)
 def login(
     payload: LoginRequest,
     response: Response,
     db: Session = Depends(get_db),
-) -> MessageResponse:
+) -> UserPublic:
     """Authenticate a user and set auth cookies."""
     user = auth_service.authenticate(db, payload)
     access, refresh = auth_service.issue_tokens(user.id)
     cookie_manager.set_tokens(response, access, refresh)
-    return MessageResponse(message="Logged in successfully")
+    return UserPublic.model_validate(user)
+
+
+@router.get("/me", response_model=UserPublic)
+def me(
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user_id),
+) -> UserPublic:
+    """Return the current authenticated user profile."""
+    user = auth_service.get_user(db, user_id)
+    return UserPublic.model_validate(user)
 
 
 @router.post("/logout", response_model=MessageResponse)

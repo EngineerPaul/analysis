@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiRequest, readJson } from '../api/client';
+import { useAuth } from '../context/AuthContext';
 import { CYRILLIC_RE, validateLogin, validatePassword } from '../utils/validators';
 
 /**
@@ -8,23 +9,14 @@ import { CYRILLIC_RE, validateLogin, validatePassword } from '../utils/validator
  */
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { user, ready, setUser } = useAuth();
   const [form, setForm] = useState({ login: '', password: '' });
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState('');
-  const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const response = await apiRequest('/analyses');
-      if (!cancelled && response.ok) {
-        navigate('/', { replace: true });
-        return;
-      }
-      if (!cancelled) setCheckingAuth(false);
-    })();
-    return () => { cancelled = true; };
-  }, [navigate]);
+    if (ready && user) navigate('/', { replace: true });
+  }, [ready, user, navigate]);
 
   /**
    * Update a form field; show Cyrillic error immediately while typing.
@@ -65,6 +57,8 @@ export default function LoginPage() {
       body: JSON.stringify(form),
     });
     if (response.status === 200) {
+      const data = await readJson(response);
+      if (data) setUser(data);
       navigate('/');
       return;
     }
@@ -73,7 +67,7 @@ export default function LoginPage() {
     else setServerError(data?.detail ? JSON.stringify(data.detail) : 'Ошибка входа');
   }
 
-  if (checkingAuth) {
+  if (!ready || user) {
     return <div className="auth-page" />;
   }
 

@@ -18,6 +18,11 @@ def test_registration_success(client: TestClient) -> None:
     )
     assert response.status_code == 201
     assert CookieManager_access_present(response)
+    body = response.json()
+    assert body["login"] == "newuser1"
+    assert body["name"] == "Анна"
+    assert body["surname"] == "Сидорова"
+    assert isinstance(body["id"], int)
 
 
 def CookieManager_access_present(response) -> bool:
@@ -62,8 +67,23 @@ def test_login_success_and_fail(client: TestClient) -> None:
     client.cookies.clear()
     ok = client.post("/api/v1/auth/login", json={"login": "loginuser", "password": "secret1"})
     assert ok.status_code == 200
+    assert ok.json()["login"] == "loginuser"
+    assert "id" in ok.json()
     bad = client.post("/api/v1/auth/login", json={"login": "loginuser", "password": "wrong12"})
     assert bad.status_code == 401
+
+
+def test_me_requires_auth_and_returns_profile(client: TestClient) -> None:
+    anonymous = client.get("/api/v1/auth/me")
+    assert anonymous.status_code == 401
+    register_user(client, login="meuser", password="secret1")
+    response = client.get("/api/v1/auth/me")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["login"] == "meuser"
+    assert body["name"] == "Иван"
+    assert body["surname"] == "Петров"
+    assert isinstance(body["id"], int)
 
 
 def test_logout_and_refresh(client: TestClient) -> None:

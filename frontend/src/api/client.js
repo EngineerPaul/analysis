@@ -5,6 +5,28 @@
 const ROOT = import.meta.env.VITE_ROOT_PATH || '/extra/analyses';
 const API_BASE = `${ROOT}/api/v1`;
 
+const NO_REFRESH_PATHS = new Set(['/auth/login', '/auth/registration', '/auth/refresh']);
+
+/** @type {Set<() => void>} */
+const unauthorizedHandlers = new Set();
+
+/**
+ * Register a callback invoked when auth cookies are no longer valid.
+ * @param {() => void} handler
+ * @returns {() => void} unsubscribe
+ */
+export function addUnauthorizedHandler(handler) {
+  unauthorizedHandlers.add(handler);
+  return () => unauthorizedHandlers.delete(handler);
+}
+
+/**
+ * Notify listeners that the session is gone.
+ */
+function notifyUnauthorized() {
+  unauthorizedHandlers.forEach((handler) => handler());
+}
+
 /**
  * Low-level fetch wrapper that always sends cookies.
  * @param {string} path
@@ -30,10 +52,13 @@ async function rawRequest(path, options = {}) {
  */
 export async function apiRequest(path, options = {}) {
   let response = await rawRequest(path, options);
-  if (response.status === 401 && path !== '/auth/login' && path !== '/auth/registration' && path !== '/auth/refresh') {
+  if (response.status === 401 && !NO_REFRESH_PATHS.has(path)) {
     const refreshed = await rawRequest('/auth/refresh', { method: 'POST' });
     if (refreshed.ok) {
       response = await rawRequest(path, options);
+    }
+    if (response.status === 401) {
+      notifyUnauthorized();
     }
   }
   return response;

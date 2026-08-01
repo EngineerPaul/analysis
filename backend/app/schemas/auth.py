@@ -65,3 +65,14 @@ class MessageResponse(BaseModel):
     """Generic message response."""
 
     message: str
+
+
+class UserPublic(BaseModel):
+    """Public user profile returned to the client."""
+
+    id: int
+    login: str
+    name: str
+    surname: str
+
+    model_config = {"from_attributes": True}

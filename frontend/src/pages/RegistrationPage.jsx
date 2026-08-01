@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiRequest, readJson } from '../api/client';
+import { useAuth } from '../context/AuthContext';
 import { CYRILLIC_RE, NAME_RE, validateLogin, validatePassword } from '../utils/validators';
 
 /**
@@ -8,6 +9,7 @@ import { CYRILLIC_RE, NAME_RE, validateLogin, validatePassword } from '../utils/
  */
 export default function RegistrationPage() {
   const navigate = useNavigate();
+  const { user, ready, setUser } = useAuth();
   const [form, setForm] = useState({
     login: '',
     password: '',
@@ -17,20 +19,10 @@ export default function RegistrationPage() {
   });
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState('');
-  const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const response = await apiRequest('/analyses');
-      if (!cancelled && response.ok) {
-        navigate('/', { replace: true });
-        return;
-      }
-      if (!cancelled) setCheckingAuth(false);
-    })();
-    return () => { cancelled = true; };
-  }, [navigate]);
+    if (ready && user) navigate('/', { replace: true });
+  }, [ready, user, navigate]);
 
   /**
    * Update a single form field; show Cyrillic error immediately for login/password.
@@ -88,6 +80,8 @@ export default function RegistrationPage() {
       }),
     });
     if (response.status === 201) {
+      const data = await readJson(response);
+      if (data) setUser(data);
       navigate('/');
       return;
     }
@@ -96,7 +90,7 @@ export default function RegistrationPage() {
     else setServerError(data?.detail ? JSON.stringify(data.detail) : 'Ошибка регистрации');
   }
 
-  if (checkingAuth) {
+  if (!ready || user) {
     return <div className="auth-page" />;
   }
 

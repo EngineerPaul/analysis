@@ -104,3 +104,10 @@ class AuthService:
         if payload.get("type") != "access":
             return None
         return int(payload["sub"])
+
+    def get_user(self, db: Session, user_id: int) -> User:
+        """Load user by id or raise 401 if missing."""
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
+        return user

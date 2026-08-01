@@ -1,5 +1,5 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
-import { apiRequest, readJson } from '../api/client';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { addUnauthorizedHandler, apiRequest, readJson } from '../api/client';
 import { sortAnalyses, uniqueNames } from '../utils/validators';
 
 const AnalysesContext = createContext(null);
@@ -76,6 +76,13 @@ export function AnalysesProvider({ children }) {
    */
   const clearGraphFilter = useCallback(() => {
     setGraphFilterState(EMPTY_GRAPH_FILTER);
+  }, []);
+
+  useEffect(() => {
+    return addUnauthorizedHandler(() => {
+      setHistory(null);
+      setGraphFilterState(EMPTY_GRAPH_FILTER);
+    });
   }, []);
 
   const names = useMemo(() => uniqueNames(history || []), [history]);

@@ -5,6 +5,7 @@ import DataTable from '../components/DataTable';
 import GraphForm from '../components/GraphForm';
 import Modal from '../components/Modal';
 import { useAnalyses } from '../context/AnalysesContext';
+import { useAuth } from '../context/AuthContext';
 import { apiRequest, readJson } from '../api/client';
 import { formatDate, formatNumber } from '../utils/validators';
 
@@ -13,12 +14,23 @@ import { formatDate, formatNumber } from '../utils/validators';
  */
 export default function HomePage() {
   const navigate = useNavigate();
+  const { user, clearUser } = useAuth();
   const { history, ensureLoaded, addLocal, removeLocal, loading, error, setHistory, setGraphFilter, clearGraphFilter } = useAnalyses();
   const [modal, setModal] = useState(null);
   const [filterName, setFilterName] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [applied, setApplied] = useState({ name: '', from: '', to: '' });
+
+  useEffect(() => {
+    if (!user) return;
+    console.log({
+      id: user.id,
+      login: user.login,
+      name: user.name,
+      surname: user.surname,
+    });
+  }, [user]);
 
   useEffect(() => {
     (async () => {
@@ -78,6 +90,7 @@ export default function HomePage() {
    */
   async function handleLogout() {
     await apiRequest('/auth/logout', { method: 'POST' });
+    clearUser();
     setHistory(null);
     clearGraphFilter();
     navigate('/login');
