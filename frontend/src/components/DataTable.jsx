@@ -1,4 +1,15 @@
 /**
+ * Cell class for known column keys.
+ * @param {string} key
+ * @returns {string|undefined}
+ */
+function cellClass(key) {
+  if (key === 'note') return 'cell-note';
+  if (key === 'name') return 'cell-name';
+  return undefined;
+}
+
+/**
  * Reusable data table with row numbers and optional delete action.
  * @param {object} props
  */
@@ -10,7 +21,7 @@ export default function DataTable({ columns, rows, onDelete, deleteTitle = 'Уд
           <tr>
             <th>№</th>
             {columns.map((column) => (
-              <th key={column.key} className={column.key === 'note' ? 'cell-note' : undefined}>
+              <th key={column.key} className={cellClass(column.key)}>
                 {column.title}
               </th>
             ))}
@@ -22,7 +33,7 @@ export default function DataTable({ columns, rows, onDelete, deleteTitle = 'Уд
             <tr key={row.id ?? index}>
               <td>{index + 1}</td>
               {columns.map((column) => (
-                <td key={column.key} className={column.key === 'note' ? 'cell-note' : undefined}>
+                <td key={column.key} className={cellClass(column.key)}>
                   {column.render ? column.render(row) : row[column.key]}
                 </td>
               ))}

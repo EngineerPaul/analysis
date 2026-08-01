@@ -176,16 +176,23 @@ input:focus, select:focus, textarea:focus {
 .data-table th, .data-table td {
   padding: 10px 12px;
   border-bottom: 1px solid var(--border);
-  text-align: left;
+  text-align: center;
   vertical-align: middle;
 }
 .data-table thead th {
   background: #c3dcce;
   color: var(--primary-deep);
+  text-align: center;
+  vertical-align: middle;
 }
 .data-table tbody tr:nth-child(odd) td { background: var(--row-a); }
 .data-table tbody tr:nth-child(even) td { background: var(--row-b); }
 .data-table tbody tr:hover td { background: #c6e0d1; }
+
+.data-table tbody td.cell-name,
+.data-table tbody td.cell-note {
+  text-align: left;
+}
 
 .data-table .cell-note {
   max-width: 200px;
@@ -194,6 +201,10 @@ input:focus, select:focus, textarea:focus {
   white-space: normal;
   overflow-wrap: anywhere;
   word-break: break-word;
+}
+
+.data-table .actions-cell {
+  text-align: center;
 }
 
 .icon-delete {
