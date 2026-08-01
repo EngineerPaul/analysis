@@ -77,7 +77,13 @@ export default function GraphPage() {
           <ScrollableSelect
             options={names}
             value={name}
-            onChange={(next) => setGraphFilter({ name: next })}
+            onChange={(next) => {
+              if (!next) {
+                setGraphFilter({ name: '', begin: '', end: '' });
+                return;
+              }
+              setGraphFilter({ name: next });
+            }}
           />
           <input
             type="date"
