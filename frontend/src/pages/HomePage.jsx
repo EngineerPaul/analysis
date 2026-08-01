@@ -13,7 +13,7 @@ import { formatDate, formatNumber } from '../utils/validators';
  */
 export default function HomePage() {
   const navigate = useNavigate();
-  const { history, ensureLoaded, addLocal, removeLocal, loading, error, setHistory } = useAnalyses();
+  const { history, ensureLoaded, addLocal, removeLocal, loading, error, setHistory, setGraphFilter, clearGraphFilter } = useAnalyses();
   const [modal, setModal] = useState(null);
   const [filterName, setFilterName] = useState('');
   const [dateFrom, setDateFrom] = useState('');
@@ -79,6 +79,7 @@ export default function HomePage() {
   async function handleLogout() {
     await apiRequest('/auth/logout', { method: 'POST' });
     setHistory(null);
+    clearGraphFilter();
     navigate('/login');
   }
 
@@ -156,8 +157,9 @@ export default function HomePage() {
           <GraphForm
             onCancel={() => setModal(null)}
             onCreate={({ name, begin, end }) => {
+              setGraphFilter({ name, begin, end });
               setModal(null);
-              navigate(`/graph?name=${encodeURIComponent(name)}&begin=${begin}&end=${end}`);
+              navigate('/graph');
             }}
           />
         </Modal>

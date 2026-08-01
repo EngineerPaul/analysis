@@ -4,6 +4,8 @@ import { sortAnalyses, uniqueNames } from '../utils/validators';
 
 const AnalysesContext = createContext(null);
 
+const EMPTY_GRAPH_FILTER = { name: '', begin: '', end: '' };
+
 /**
  * Provide shared analysis history across pages.
  * @param {{children: import('react').ReactNode}} props
@@ -12,6 +14,7 @@ export function AnalysesProvider({ children }) {
   const [history, setHistory] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [graphFilter, setGraphFilterState] = useState(EMPTY_GRAPH_FILTER);
 
   /**
    * Load full analysis list from backend if not cached.
@@ -57,6 +60,24 @@ export function AnalysesProvider({ children }) {
     setHistory((prev) => (prev || []).filter((item) => item.id !== id));
   }, []);
 
+  /**
+   * Update graph page filters (name / period). Survives SPA navigation, not full reload.
+   * @param {Partial<{name: string, begin: string, end: string}>|Function} next
+   */
+  const setGraphFilter = useCallback((next) => {
+    setGraphFilterState((prev) => {
+      const patch = typeof next === 'function' ? next(prev) : next;
+      return { ...prev, ...patch };
+    });
+  }, []);
+
+  /**
+   * Reset graph filters (e.g. on logout).
+   */
+  const clearGraphFilter = useCallback(() => {
+    setGraphFilterState(EMPTY_GRAPH_FILTER);
+  }, []);
+
   const names = useMemo(() => uniqueNames(history || []), [history]);
 
   const value = useMemo(
@@ -66,12 +87,26 @@ export function AnalysesProvider({ children }) {
       loading,
       error,
       names,
+      graphFilter,
+      setGraphFilter,
+      clearGraphFilter,
       ensureLoaded,
       addLocal,
       removeLocal,
       setHistory,
     }),
-    [history, loading, error, names, ensureLoaded, addLocal, removeLocal],
+    [
+      history,
+      loading,
+      error,
+      names,
+      graphFilter,
+      setGraphFilter,
+      clearGraphFilter,
+      ensureLoaded,
+      addLocal,
+      removeLocal,
+    ],
   );
 
   return <AnalysesContext.Provider value={value}>{children}</AnalysesContext.Provider>;

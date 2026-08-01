@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AnalysesChart from '../components/AnalysesChart';
 import DataTable from '../components/DataTable';
 import ScrollableSelect from '../components/ScrollableSelect';
@@ -33,11 +33,8 @@ function filterRows(history, name, begin, end) {
  */
 export default function GraphPage() {
   const navigate = useNavigate();
-  const [params] = useSearchParams();
-  const { history, names, ensureLoaded, loaded } = useAnalyses();
-  const [name, setName] = useState(params.get('name') || '');
-  const [begin, setBegin] = useState(params.get('begin') || '');
-  const [end, setEnd] = useState(params.get('end') || '');
+  const { history, names, ensureLoaded, loaded, graphFilter, setGraphFilter } = useAnalyses();
+  const { name, begin, end } = graphFilter;
   const [hiddenIds, setHiddenIds] = useState(() => new Set());
 
   useEffect(() => {
@@ -46,14 +43,6 @@ export default function GraphPage() {
       if (data === null) navigate('/login');
     })();
   }, [ensureLoaded, navigate]);
-
-  useEffect(() => {
-    const paramName = params.get('name') || '';
-    if (!paramName) return;
-    setName(paramName);
-    setBegin(params.get('begin') || '');
-    setEnd(params.get('end') || '');
-  }, [params]);
 
   useEffect(() => {
     setHiddenIds(new Set());
@@ -85,9 +74,21 @@ export default function GraphPage() {
         <Link className="back-link" to="/">← На Главную</Link>
         <h2 className="section-title">Создание графика</h2>
         <div className="filters graph-filters">
-          <ScrollableSelect options={names} value={name} onChange={setName} />
-          <input type="date" value={begin} onChange={(e) => setBegin(e.target.value)} />
-          <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} />
+          <ScrollableSelect
+            options={names}
+            value={name}
+            onChange={(next) => setGraphFilter({ name: next })}
+          />
+          <input
+            type="date"
+            value={begin}
+            onChange={(e) => setGraphFilter({ begin: e.target.value })}
+          />
+          <input
+            type="date"
+            value={end}
+            onChange={(e) => setGraphFilter({ end: e.target.value })}
+          />
         </div>
 
         <div className="chart-zone">

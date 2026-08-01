@@ -3,7 +3,7 @@ import { useAnalyses } from '../context/AnalysesContext';
 import ScrollableSelect from './ScrollableSelect';
 
 /**
- * Modal form that redirects to graph page with query params.
+ * Modal form that opens the graph page with filters via context.
  * @param {{onCreate: Function, onCancel: Function}} props
  */
 export default function GraphForm({ onCreate, onCancel }) {
