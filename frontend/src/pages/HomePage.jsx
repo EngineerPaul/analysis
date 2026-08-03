@@ -15,8 +15,20 @@ import { formatDate, formatNumber } from '../utils/validators';
 export default function HomePage() {
   const navigate = useNavigate();
   const { user, clearUser } = useAuth();
-  const { history, ensureLoaded, addLocal, removeLocal, loading, error, setHistory, setGraphFilter, clearGraphFilter } = useAnalyses();
+  const {
+    history,
+    ensureLoaded,
+    addLocal,
+    removeLocal,
+    updateLocal,
+    loading,
+    error,
+    setHistory,
+    setGraphFilter,
+    clearGraphFilter,
+  } = useAnalyses();
   const [modal, setModal] = useState(null);
+  const [editing, setEditing] = useState(null);
   const [filterName, setFilterName] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
@@ -60,6 +72,14 @@ export default function HomePage() {
   }, [history, applied]);
 
   /**
+   * Close any analysis modal and drop unsaved edits.
+   */
+  function closeAnalysesModal() {
+    setModal(null);
+    setEditing(null);
+  }
+
+  /**
    * Create analysis via API and update local store.
    * @param {object} payload
    */
@@ -73,7 +93,23 @@ export default function HomePage() {
     addLocal(item);
     sessionStorage.setItem('last_org', payload.organization || '');
     sessionStorage.setItem('last_date', payload.date || '');
-    setModal(null);
+    closeAnalysesModal();
+  }
+
+  /**
+   * Update analysis via API and re-sort local history.
+   * @param {object} payload
+   */
+  async function handleUpdate(payload) {
+    if (!editing) return;
+    const response = await apiRequest(`/analyses/${editing.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) return;
+    const item = await readJson(response);
+    updateLocal(item);
+    closeAnalysesModal();
   }
 
   /**
@@ -83,6 +119,15 @@ export default function HomePage() {
   async function handleDelete(row) {
     const response = await apiRequest(`/analyses/${row.id}`, { method: 'DELETE' });
     if (response.status === 204) removeLocal(row.id);
+  }
+
+  /**
+   * Open edit modal with row data.
+   * @param {object} row
+   */
+  function handleEdit(row) {
+    setEditing(row);
+    setModal('edit');
   }
 
   /**
@@ -157,12 +202,27 @@ export default function HomePage() {
 
         {loading ? <p>Загрузка...</p> : null}
         {error && error !== 'unauthorized' ? <p className="server-error">{error}</p> : null}
-        <DataTable columns={columns} rows={visible} onDelete={handleDelete} />
+        <DataTable
+          columns={columns}
+          rows={visible}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
+        />
       </div>
 
       {modal === 'analyses' ? (
-        <Modal title="Добавление анализа" onClose={() => setModal(null)}>
-          <AnalysesForm onSuccess={handleCreate} onCancel={() => setModal(null)} />
+        <Modal title="Добавление анализа" onClose={closeAnalysesModal}>
+          <AnalysesForm onSuccess={handleCreate} onCancel={closeAnalysesModal} />
+        </Modal>
+      ) : null}
+      {modal === 'edit' && editing ? (
+        <Modal title="Редактирование анализа" onClose={closeAnalysesModal}>
+          <AnalysesForm
+            key={editing.id}
+            initial={editing}
+            onSuccess={handleUpdate}
+            onCancel={closeAnalysesModal}
+          />
         </Modal>
       ) : null}
       {modal === 'graph' ? (

@@ -11,7 +11,11 @@ export default function Modal({ title, onClose, children }) {
      * @param {KeyboardEvent} event
      */
     function handleKeyDown(event) {
-      if (event.key === 'Escape') onClose();
+      if (event.key !== 'Escape') return;
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+      onClose();
     }
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);

@@ -33,6 +33,18 @@ def list_analyses(
     return [AnalysisResponse.model_validate(item) for item in items]
 
 
+@router.put("/{analysis_id}", response_model=AnalysisResponse)
+def update_analysis(
+    analysis_id: int,
+    payload: AnalysisCreate,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user_id),
+) -> AnalysisResponse:
+    """Update an existing analysis belonging to the authenticated user."""
+    analysis = analyses_service.update(db, user_id, analysis_id, payload)
+    return AnalysisResponse.model_validate(analysis)
+
+
 @router.delete("/{analysis_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_analysis(
     analysis_id: int,

@@ -28,7 +28,7 @@ body {
 }
 
 a { color: var(--primary-deep); }
-button, a, select, .icon-delete { cursor: pointer; }
+button, a, select, .icon-delete, .icon-edit { cursor: pointer; }
 input, textarea { cursor: text; }
 
 .page {
@@ -217,7 +217,45 @@ input:focus, select:focus, textarea:focus {
 }
 
 .data-table .actions-cell {
-  text-align: center;
+  padding: 0;
+  height: 1px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.data-table .actions-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 100%;
+  min-height: 100%;
+  padding: 10px 12px;
+  box-sizing: border-box;
+}
+
+.icon-edit {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.icon-edit img {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.15s ease;
+}
+.icon-edit:hover img {
+  transform: scale(1.3);
+}
+.icon-edit:focus,
+.icon-edit:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .icon-delete {
@@ -229,6 +267,11 @@ input:focus, select:focus, textarea:focus {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+.icon-delete:focus,
+.icon-delete:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 .icon-delete .delete-x { stroke: var(--danger); }
 .icon-delete:hover { background: var(--danger); }

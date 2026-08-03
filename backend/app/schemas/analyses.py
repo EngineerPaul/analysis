@@ -9,7 +9,7 @@ from app.utils.validators import ANALYSIS_NAME_PATTERN, ORGANIZATION_PATTERN
 
 
 class AnalysisCreate(BaseModel):
-    """Payload for creating an analysis."""
+    """Payload for creating or updating an analysis."""
 
     name: str = Field(min_length=1, max_length=60)
     date: date
@@ -44,6 +44,10 @@ class AnalysisCreate(BaseModel):
         if upper is not None and lower is not None and upper <= lower:
             raise ValueError("Upper reference must be greater than lower reference")
         return self
+
+
+# Same payload shape for updates.
+AnalysisUpdate = AnalysisCreate
 
 
 class AnalysisResponse(BaseModel):

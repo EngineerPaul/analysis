@@ -61,6 +61,17 @@ export function AnalysesProvider({ children }) {
   }, []);
 
   /**
+   * Replace an analysis after successful update and re-sort (order may change).
+   * @param {object} item
+   */
+  const updateLocal = useCallback((item) => {
+    setHistory((prev) => {
+      const next = (prev || []).map((row) => (row.id === item.id ? item : row));
+      return sortAnalyses(next);
+    });
+  }, []);
+
+  /**
    * Update graph page filters (name / period). Survives SPA navigation, not full reload.
    * @param {Partial<{name: string, begin: string, end: string}>|Function} next
    */
@@ -100,6 +111,7 @@ export function AnalysesProvider({ children }) {
       ensureLoaded,
       addLocal,
       removeLocal,
+      updateLocal,
       setHistory,
     }),
     [
@@ -113,6 +125,7 @@ export function AnalysesProvider({ children }) {
       ensureLoaded,
       addLocal,
       removeLocal,
+      updateLocal,
     ],
   );
 

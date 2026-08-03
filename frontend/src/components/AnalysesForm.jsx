@@ -3,26 +3,44 @@ import { ANALYSIS_NAME_RE, ORG_RE, formatNumber, parseNumber } from '../utils/va
 import { useAnalyses } from '../context/AnalysesContext';
 
 /**
- * Form for creating a new analysis inside a modal.
- * @param {{onSuccess: Function, onCancel: Function}} props
+ * Map an analysis row to editable form fields.
+ * @param {object} row
  */
-export default function AnalysesForm({ onSuccess, onCancel }) {
+function rowToForm(row) {
+  return {
+    name: row.name || '',
+    date: row.date || '',
+    value: row.value != null && row.value !== '' ? formatNumber(row.value) : '',
+    ref_lower: row.ref_lower != null ? formatNumber(row.ref_lower) : '',
+    ref_upper: row.ref_upper != null ? formatNumber(row.ref_upper) : '',
+    organization: row.organization || '',
+    note: row.note || '',
+  };
+}
+
+/**
+ * Form for creating or editing an analysis inside a modal.
+ * @param {{initial?: object|null, onSuccess: Function, onCancel: Function, submitLabel?: string}} props
+ */
+export default function AnalysesForm({ initial = null, onSuccess, onCancel, submitLabel }) {
   const { history, names } = useAnalyses();
+  const isEdit = Boolean(initial);
   const defaults = useMemo(() => {
+    if (isEdit) return rowToForm(initial);
     const org = sessionStorage.getItem('last_org') || '';
     const date = sessionStorage.getItem('last_date') || '';
-    return { organization: org, date };
-  }, []);
+    return {
+      name: '',
+      date,
+      value: '',
+      ref_lower: '',
+      ref_upper: '',
+      organization: org,
+      note: '',
+    };
+  }, [initial, isEdit]);
 
-  const [form, setForm] = useState({
-    name: '',
-    date: defaults.date,
-    value: '',
-    ref_lower: '',
-    ref_upper: '',
-    organization: defaults.organization,
-    note: '',
-  });
+  const [form, setForm] = useState(defaults);
   const [errors, setErrors] = useState({});
   const [suggestions, setSuggestions] = useState([]);
   const [highlight, setHighlight] = useState({});
@@ -53,10 +71,11 @@ export default function AnalysesForm({ onSuccess, onCancel }) {
   }
 
   /**
-   * Autofill organization/refs from last same-named analysis.
+   * Autofill organization/refs from last same-named analysis (create mode only).
    */
   function handleNameBlur() {
     setSuggestions([]);
+    if (isEdit) return;
     const match = [...history].reverse().find((item) => item.name === form.name.trim());
     if (!match) return;
     const next = {
@@ -101,7 +120,7 @@ export default function AnalysesForm({ onSuccess, onCancel }) {
   }
 
   /**
-   * Submit analysis create request.
+   * Submit create or update payload to the parent handler.
    * @param {SubmitEvent} event
    */
   async function handleSubmit(event) {
@@ -122,6 +141,8 @@ export default function AnalysesForm({ onSuccess, onCancel }) {
       setSubmitting(false);
     }
   }
+
+  const buttonLabel = submitLabel || (isEdit ? 'Сохранить' : 'Добавить');
 
   return (
     <form className="stack-form" onSubmit={handleSubmit}>
@@ -211,7 +232,7 @@ export default function AnalysesForm({ onSuccess, onCancel }) {
       <div className="form-actions">
         <button type="button" className="btn ghost" onClick={onCancel}>Отмена</button>
         <button type="submit" className="btn primary" disabled={submitting}>
-          Добавить
+          {buttonLabel}
         </button>
       </div>
     </form>

@@ -64,3 +64,28 @@ def test_analysis_without_references(client: TestClient) -> None:
     response = client.post("/api/v1/analyses", json=payload)
     assert response.status_code == 201
     assert response.json()["ref_upper"] is None
+
+
+def test_update_analysis(client: TestClient) -> None:
+    register_user(client, login="edituser")
+    created = client.post("/api/v1/analyses", json=analysis_payload(name="Глюкоза", date="2025-01-10"))
+    assert created.status_code == 201
+    analysis_id = created.json()["id"]
+
+    updated = client.put(
+        f"/api/v1/analyses/{analysis_id}",
+        json=analysis_payload(name="Холестерин", date="2025-02-20", value=6.2, note="правка"),
+    )
+    assert updated.status_code == 200
+    body = updated.json()
+    assert body["id"] == analysis_id
+    assert body["name"] == "Холестерин"
+    assert body["date"] == "2025-02-20"
+    assert body["note"] == "правка"
+
+    listed = client.get("/api/v1/analyses").json()
+    assert len(listed) == 1
+    assert listed[0]["name"] == "Холестерин"
+
+    missing = client.put("/api/v1/analyses/99999", json=analysis_payload())
+    assert missing.status_code == 404

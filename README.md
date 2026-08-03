@@ -72,7 +72,7 @@ docker compose up --build -d           # без profile devproxy
 - `POST /auth/registration`, `/auth/login` — возвращают профиль `{id, login, name, surname}`
 - `GET /auth/me` — текущий пользователь
 - `POST /auth/logout`, `/auth/refresh`
-- `POST|GET /analyses`, `DELETE /analyses/{id}`
+- `POST|GET /analyses`, `PUT|DELETE /analyses/{id}`
 
 JWT в HttpOnly cookie (`SameSite=Lax`).
 
