@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { forwardRef, useMemo, useState } from 'react';
 import { formatNumber } from '../utils/validators';
 
 const MONTHS = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
@@ -28,8 +28,9 @@ function toPoints(points) {
 /**
  * Custom SVG chart for analysis values and optional reference lines.
  * @param {{items: Array}} props
+ * @param {import('react').Ref<SVGSVGElement>} ref
  */
-export default function AnalysesChart({ items }) {
+const AnalysesChart = forwardRef(function AnalysesChart({ items }, ref) {
   const [tooltip, setTooltip] = useState(null);
   const [hoverId, setHoverId] = useState(null);
   const width = 760;
@@ -102,7 +103,13 @@ export default function AnalysesChart({ items }) {
 
   return (
     <div className="chart-wrap">
-      <svg viewBox={`0 0 ${width} ${height}`} className="analyses-chart" role="img" aria-label="График анализов">
+      <svg
+        ref={ref}
+        viewBox={`0 0 ${width} ${height}`}
+        className="analyses-chart"
+        role="img"
+        aria-label="График анализов"
+      >
         {model.xTicks.map((tick) => (
           <g key={`x-${tick.x}`}>
             <line x1={tick.x} y1={padding.top} x2={tick.x} y2={height - padding.bottom} className="grid-line" />
@@ -203,4 +210,6 @@ export default function AnalysesChart({ items }) {
       ) : null}
     </div>
   );
-}
+});
+
+export default AnalysesChart;

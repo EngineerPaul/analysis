@@ -16,7 +16,6 @@ backend/data/
 *.db
 *.sqlite
 *.sqlite3
-node_modules/
 frontend/dist/
 .DS_Store
 .idea/

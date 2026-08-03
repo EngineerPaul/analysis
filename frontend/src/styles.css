@@ -319,6 +319,20 @@ input:focus, select:focus, textarea:focus {
 }
 .modal-body { padding: 16px; }
 .form-actions { display: flex; justify-content: center; gap: 10px; }
+
+.export-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  justify-content: center;
+}
+.export-bar .btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
 .refs-row { display: flex; gap: 10px; align-items: center; }
 .suggest-wrap { position: relative; }
 .suggestions {

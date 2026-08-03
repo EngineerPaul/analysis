@@ -7,6 +7,7 @@ import Modal from '../components/Modal';
 import { useAnalyses } from '../context/AnalysesContext';
 import { useAuth } from '../context/AuthContext';
 import { apiRequest, readJson } from '../api/client';
+import { downloadHomePdf, downloadHomeXlsx } from '../utils/exportFiles';
 import { formatDate, formatNumber } from '../utils/validators';
 
 /**
@@ -33,6 +34,7 @@ export default function HomePage() {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [applied, setApplied] = useState({ name: '', from: '', to: '' });
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -141,6 +143,27 @@ export default function HomePage() {
     navigate('/login');
   }
 
+  /**
+   * Download visible table as PDF.
+   */
+  async function handleExportPdf() {
+    if (!visible.length) return;
+    setExporting(true);
+    try {
+      await downloadHomePdf({ user, rows: visible });
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  /**
+   * Download visible table as Excel.
+   */
+  function handleExportXlsx() {
+    if (!visible.length) return;
+    downloadHomeXlsx({ rows: visible });
+  }
+
   const columns = [
     { key: 'name', title: 'Название' },
     { key: 'date', title: 'Дата', render: (row) => formatDate(row.date) },
@@ -208,6 +231,25 @@ export default function HomePage() {
           onDelete={handleDelete}
           onEdit={handleEdit}
         />
+
+        <div className="export-bar">
+          <button
+            type="button"
+            className="btn primary"
+            disabled={!visible.length || exporting}
+            onClick={handleExportPdf}
+          >
+            Скачать PDF
+          </button>
+          <button
+            type="button"
+            className="btn primary"
+            disabled={!visible.length || exporting}
+            onClick={handleExportXlsx}
+          >
+            Скачать excel
+          </button>
+        </div>
       </div>
 
       {modal === 'analyses' ? (

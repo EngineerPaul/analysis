@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AnalysesChart from '../components/AnalysesChart';
 import DataTable from '../components/DataTable';
 import ScrollableSelect from '../components/ScrollableSelect';
 import { useAnalyses } from '../context/AnalysesContext';
+import { useAuth } from '../context/AuthContext';
+import { downloadChartPng, downloadGraphPdf } from '../utils/exportFiles';
 import { formatDate, formatNumber } from '../utils/validators';
 
 /**
@@ -33,9 +35,12 @@ function filterRows(history, name, begin, end) {
  */
 export default function GraphPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { history, names, ensureLoaded, loaded, graphFilter, setGraphFilter } = useAnalyses();
   const { name, begin, end } = graphFilter;
   const [hiddenIds, setHiddenIds] = useState(() => new Set());
+  const [exporting, setExporting] = useState(false);
+  const chartRef = useRef(null);
 
   useEffect(() => {
     (async () => {
@@ -68,6 +73,42 @@ export default function GraphPage() {
     { key: 'note', title: 'Примечание', render: (row) => row.note || '—' },
   ], []);
 
+  /**
+   * Download graph PDF report.
+   */
+  async function handlePdf() {
+    if (!chartRef.current || !chartItems.length) return;
+    setExporting(true);
+    try {
+      await downloadGraphPdf({
+        user,
+        analysisName: name,
+        begin,
+        end,
+        rows: chartItems,
+        svgEl: chartRef.current,
+      });
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  /**
+   * Download chart PNG with analysis title.
+   */
+  async function handlePng() {
+    if (!chartRef.current || !chartItems.length) return;
+    setExporting(true);
+    try {
+      await downloadChartPng({
+        svgEl: chartRef.current,
+        analysisName: name,
+      });
+    } finally {
+      setExporting(false);
+    }
+  }
+
   return (
     <div className="page">
       <div className="content">
@@ -99,7 +140,7 @@ export default function GraphPage() {
 
         <div className="chart-zone">
           {chartItems.length ? (
-            <AnalysesChart items={chartItems} />
+            <AnalysesChart ref={chartRef} items={chartItems} />
           ) : (
             <div className="chart-empty">
               {name ? 'Нет данных за выбранный период' : 'Выберите анализ'}
@@ -114,6 +155,25 @@ export default function GraphPage() {
             setHiddenIds((prev) => new Set(prev).add(row.id));
           }}
         />
+
+        <div className="export-bar">
+          <button
+            type="button"
+            className="btn primary"
+            disabled={!chartItems.length || exporting}
+            onClick={handlePdf}
+          >
+            Скачать PDF
+          </button>
+          <button
+            type="button"
+            className="btn primary"
+            disabled={!chartItems.length || exporting}
+            onClick={handlePng}
+          >
+            Скачать график
+          </button>
+        </div>
       </div>
     </div>
   );

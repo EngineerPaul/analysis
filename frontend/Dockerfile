@@ -7,6 +7,7 @@ ENV NPM_CONFIG_UPDATE_NOTIFIER=false
 
 COPY package.json ./
 RUN npm install --no-audit --no-fund --fetch-retries=5 --fetch-retry-mintimeout=20000
+# может занять до 20 минут (и более). Это не зависание контейнера, а сборка.
 
 COPY . .
 ARG VITE_ROOT_PATH=/extra/analyses
