@@ -1,3 +1,5 @@
+import { refRangeRowClass } from '../utils/validators';
+
 /**
  * Cell class for known column keys.
  * @param {string} key
@@ -30,7 +32,7 @@ export default function DataTable({ columns, rows, onDelete, deleteTitle = 'Уд
         </thead>
         <tbody>
           {rows.map((row, index) => (
-            <tr key={row.id ?? index}>
+            <tr key={row.id ?? index} className={refRangeRowClass(row)}>
               <td>{index + 1}</td>
               {columns.map((column) => (
                 <td key={column.key} className={cellClass(column.key)}>

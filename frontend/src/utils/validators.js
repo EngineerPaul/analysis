@@ -97,3 +97,35 @@ export function parseNumber(raw) {
   if (normalized === '') return Number.NaN;
   return Number(normalized);
 }
+
+/**
+ * Compare analysis value to its reference range for row styling.
+ * @param {{value?: number|null, ref_lower?: number|null, ref_upper?: number|null}} row
+ * @returns {'high'|'low'|'normal'}
+ */
+export function getRefRangeStatus(row) {
+  if (row == null || row.ref_lower == null || row.ref_upper == null || row.value == null) {
+    return 'normal';
+  }
+  const value = Number(row.value);
+  const lower = Number(row.ref_lower);
+  const upper = Number(row.ref_upper);
+  if (Number.isNaN(value) || Number.isNaN(lower) || Number.isNaN(upper)) {
+    return 'normal';
+  }
+  if (value > upper) return 'high';
+  if (value < lower) return 'low';
+  return 'normal';
+}
+
+/**
+ * CSS class for a table row based on reference range check.
+ * @param {{value?: number|null, ref_lower?: number|null, ref_upper?: number|null}} row
+ * @returns {string|undefined}
+ */
+export function refRangeRowClass(row) {
+  const status = getRefRangeStatus(row);
+  if (status === 'high') return 'row-ref-high';
+  if (status === 'low') return 'row-ref-low';
+  return undefined;
+}

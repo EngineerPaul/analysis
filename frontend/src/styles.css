@@ -189,6 +189,19 @@ input:focus, select:focus, textarea:focus {
 .data-table tbody tr:nth-child(even) td { background: var(--row-b); }
 .data-table tbody tr:hover td { background: #c6e0d1; }
 
+.data-table tbody tr.row-ref-high td {
+  background: #f3c49a;
+}
+.data-table tbody tr.row-ref-high:hover td {
+  background: #eeb07a;
+}
+.data-table tbody tr.row-ref-low td {
+  background: #bad1f7;
+}
+.data-table tbody tr.row-ref-low:hover td {
+  background: #95b4e9;
+}
+
 .data-table tbody td.cell-name,
 .data-table tbody td.cell-note {
   text-align: left;
