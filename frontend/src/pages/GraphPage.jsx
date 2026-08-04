@@ -88,6 +88,9 @@ export default function GraphPage() {
         rows: chartItems,
         svgEl: chartRef.current,
       });
+    } catch (err) {
+      console.error(err);
+      window.alert(err?.message || 'Не удалось скачать PDF');
     } finally {
       setExporting(false);
     }

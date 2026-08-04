@@ -35,6 +35,7 @@ export default function HomePage() {
   const [dateTo, setDateTo] = useState('');
   const [applied, setApplied] = useState({ name: '', from: '', to: '' });
   const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState('');
 
   useEffect(() => {
     if (!user) return;
@@ -149,8 +150,12 @@ export default function HomePage() {
   async function handleExportPdf() {
     if (!visible.length) return;
     setExporting(true);
+    setExportError('');
     try {
       await downloadHomePdf({ user, rows: visible });
+    } catch (err) {
+      console.error(err);
+      setExportError(err?.message || 'Не удалось скачать PDF');
     } finally {
       setExporting(false);
     }
@@ -225,6 +230,7 @@ export default function HomePage() {
 
         {loading ? <p>Загрузка...</p> : null}
         {error && error !== 'unauthorized' ? <p className="server-error">{error}</p> : null}
+        {exportError ? <p className="server-error">{exportError}</p> : null}
         <DataTable
           columns={columns}
           rows={visible}
