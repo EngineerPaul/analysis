@@ -34,13 +34,18 @@ function notifyUnauthorized() {
  * @returns {Promise<Response>}
  */
 async function rawRequest(path, options = {}) {
+  const headers = { ...(options.headers || {}) };
+  const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
+  if (!isFormData && headers['Content-Type'] === undefined) {
+    headers['Content-Type'] = 'application/json';
+  }
+  if (isFormData) {
+    delete headers['Content-Type'];
+  }
   return fetch(`${API_BASE}${path}`, {
     credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers || {}),
-    },
     ...options,
+    headers,
   });
 }
 

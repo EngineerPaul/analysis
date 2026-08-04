@@ -3,6 +3,7 @@ import { AnalysesProvider } from './context/AnalysesContext';
 import { AuthProvider } from './context/AuthContext';
 import GraphPage from './pages/GraphPage';
 import HomePage from './pages/HomePage';
+import ArchivePage from './pages/ArchivePage';
 import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 
@@ -21,6 +22,7 @@ export default function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/" element={<HomePage />} />
             <Route path="/graph" element={<GraphPage />} />
+            <Route path="/archive" element={<ArchivePage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>

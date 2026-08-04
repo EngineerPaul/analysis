@@ -23,6 +23,7 @@ docker network create extra_services   # если сети ещё нет
 
 ```nginx
 location /extra/analyses/api/ {
+    client_max_body_size 50m;
     proxy_pass http://analyses_backend:8000/api/;
     proxy_http_version 1.1;
     proxy_set_header Host $host;

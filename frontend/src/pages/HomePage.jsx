@@ -249,6 +249,13 @@ export default function HomePage() {
           >
             Скачать excel
           </button>
+          <button
+            type="button"
+            className="btn primary"
+            onClick={() => navigate('/archive')}
+          >
+            Архив
+          </button>
         </div>
       </div>
 

@@ -12,6 +12,9 @@ os.environ["COOKIE_PATH"] = "/"
 os.environ["COOKIE_SAMESITE"] = "lax"
 os.environ["ROOT_PATH"] = ""
 os.environ["LOG_FILE"] = "logs/test.log"
+os.environ["ARCHIVE_DIR"] = "logs/test-archive"
+os.environ["ARCHIVE_MAX_BYTES"] = "5242880"
+os.environ["ARCHIVE_UPLOAD_MAX_BYTES"] = "52428800"
 
 import pytest
 from fastapi.testclient import TestClient

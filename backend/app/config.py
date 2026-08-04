@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:8000,https://daystream.ru"
     log_file: str = "logs/app.log"
     backend_port: int = 8000
+    archive_dir: str = "/data/archive"
+    archive_max_bytes: int = 5 * 1024 * 1024
+    archive_upload_max_bytes: int = 50 * 1024 * 1024
 
     @property
     def cors_origin_list(self) -> list[str]:

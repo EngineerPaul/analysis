@@ -60,6 +60,8 @@ docker compose up --build -d           # без profile devproxy
 - `CORS_ORIGINS`
 - `SECRET_KEY`
 - `DATABASE_URL=sqlite:////data/analyses.db`
+- `ARCHIVE_DIR=/data/archive`
+- `ARCHIVE_MAX_BYTES=5242880`
 
 `env_file` у backend — переменные в **запущенный** API-контейнер.  
 У frontend отдельный `.env` не нужен: `VITE_*` задаётся при сборке через compose `build.args`.
@@ -73,8 +75,13 @@ docker compose up --build -d           # без profile devproxy
 - `GET /auth/me` — текущий пользователь
 - `POST /auth/logout`, `/auth/refresh`
 - `POST|GET /analyses`, `PUT|DELETE /analyses/{id}`
+- `GET|POST /archive`, `GET /archive/limits`, `GET /archive/{id}/download`, `DELETE /archive/{id}`
 
 JWT в HttpOnly cookie (`SameSite=Lax`).
+
+Файлы архива: каталог `ARCHIVE_DIR` (по умолчанию `/data/archive` внутри тома `./backend/data`).  
+Лимит хранения после сжатия: `ARCHIVE_MAX_BYTES` (5 МБ).  
+Лимит сырой загрузки: `ARCHIVE_UPLOAD_MAX_BYTES` (50 МБ) — PNG/изображения жмутся в JPEG, PDF пересжимаются.
 
 ## Тесты backend
 

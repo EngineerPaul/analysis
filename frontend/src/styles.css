@@ -28,7 +28,7 @@ body {
 }
 
 a { color: var(--primary-deep); }
-button, a, select, .icon-delete, .icon-edit { cursor: pointer; }
+button, a, select, .icon-delete, .icon-edit, .icon-download { cursor: pointer; }
 input, textarea { cursor: text; }
 
 .page {
@@ -333,6 +333,51 @@ input:focus, select:focus, textarea:focus {
   opacity: 0.55;
   cursor: not-allowed;
 }
+
+.archive-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.archive-toolbar .section-title {
+  margin: 0;
+}
+.archive-empty {
+  text-align: center;
+  color: var(--muted);
+}
+.file-field .file-name {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.icon-download {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.icon-download svg {
+  transition: transform 0.15s ease;
+}
+.icon-download:hover svg {
+  transform: scale(1.3);
+}
+.icon-download:focus,
+.icon-download:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
 .refs-row { display: flex; gap: 10px; align-items: center; }
 .suggest-wrap { position: relative; }
 .suggestions {
